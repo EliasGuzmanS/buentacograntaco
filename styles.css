@@ -44,10 +44,11 @@ body {
   color: #fff;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start; /* Permite que el contenido excedente crezca hacia abajo */
   min-height: 100vh;
-  overflow: hidden;
-  padding: 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 20px 10px;
 }
 
 /* CONTENEDOR DEL JUEGO */
@@ -56,6 +57,7 @@ body {
   max-width: 1150px;
   height: 92vh;
   min-height: 680px;
+  margin: auto; /* Centra verticalmente cuando hay espacio de sobra */
   background: #3e2723; /* Madera base */
   /* Textura de tablones de madera usando gradiente CSS */
   background-image: 
@@ -1856,4 +1858,33 @@ body {
 
 .oi-extra-item .oi-label {
   color: #ffd080;
+}
+
+/* BOTÓN DE PANTALLA COMPLETA GLOBAL */
+.global-fullscreen-btn {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.global-fullscreen-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: #f39c12;
+  color: #f39c12;
+  transform: scale(1.05);
+}
+
+.global-fullscreen-btn:active {
+  transform: scale(0.95);
 }

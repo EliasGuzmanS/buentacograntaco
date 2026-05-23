@@ -223,7 +223,38 @@ document.addEventListener('DOMContentLoaded', () => {
   setupKitchenEvents();
   setupModalEvents();
   setupSummaryEvents();
+  setupFullscreen();
 });
+
+function setupFullscreen() {
+  const btnFullscreen = document.getElementById('btn-global-fullscreen');
+  if (!btnFullscreen) return;
+
+  btnFullscreen.addEventListener('click', () => {
+    if (window.sound) window.sound.playClick();
+    
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(err => {
+        console.log(`Error al intentar modo pantalla completa: ${err.message}`);
+      });
+      btnFullscreen.innerText = '🗗 Salir Pantalla Completa';
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+        btnFullscreen.innerText = '⛶ Pantalla Completa';
+      }
+    }
+  });
+
+  // Escuchar cambios de estado para actualizar el texto del botón por si se sale con ESC
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+      btnFullscreen.innerText = '⛶ Pantalla Completa';
+    } else {
+      btnFullscreen.innerText = '🗗 Salir Pantalla Completa';
+    }
+  });
+}
 
 // --- PANTALLA INICIO ---
 function setupSplashEvents() {
