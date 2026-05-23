@@ -58,7 +58,6 @@ const CUSTOMERS = [
     name: 'Lauro',
     state: 'Chihuahua 🏔️',
     dialog: '¡Qué tal chavalillo! Tráeme un burrito de machaca con huevo de volada, con sus rajas de chilaca y queso menonita derretido. Que la tortilla de harina grande esté bien doradita.',
-    shortDialog: '¡Ajúa! Un burrito de machaca de volada, chavalillo.',
     recipeId: 'machaca_burrito',
     patience: 100,
     slang: {
@@ -72,7 +71,6 @@ const CUSTOMERS = [
     name: 'Reyna',
     state: 'Sonora 🌵',
     dialog: '¡Qué onda pariente! Se me antoja un taco de carne asada con su respectivo guacamole y cebolla con cilantro. Que la tortilla de harina chica quede bien doradita en el comal, ¿eh?',
-    shortDialog: '¡Qué onda pariente! Se me antoja un taco de asada bien doradito.',
     recipeId: 'asada_taco',
     patience: 100,
     slang: {
@@ -86,7 +84,6 @@ const CUSTOMERS = [
     name: 'Eulalio',
     state: 'Coahuila 🍳',
     dialog: '¡Asuuu, compadre! Qué calorón hace. Échame un burrito de discada norteña con frijoles refritos y queso derretido en tortilla grande de trigo. Y porfa me lo partes a la mitad.',
-    shortDialog: '¡Asuuu compadre! Un burrito de discada bien caliente, partido a la mitad.',
     recipeId: 'discada_burrito',
     patience: 100,
     slang: {
@@ -100,7 +97,6 @@ const CUSTOMERS = [
     name: 'Marina',
     state: 'Baja California 🌊',
     dialog: 'Hola mijo. Vengo con antojo de un taco de pescado capeado. Prepáralo en tortilla de maíz con su col picadita (repollo), salsa verde y limón. ¡Que quede bien chilo!',
-    shortDialog: 'Hola mijo, un taco de pescado capeado estilo Ensenada.',
     recipeId: 'pescado_taco',
     patience: 100,
     slang: {
@@ -114,7 +110,6 @@ const CUSTOMERS = [
     name: 'Doroteo',
     state: 'Durango 🦂',
     dialog: '¡Buenas! Tráeme un burrito bien reportado de discada con frijoles y queso en tortilla de harina grande. Pero no me le pongas nada de verduras ni salsas, al natural y bien caliente.',
-    shortDialog: '¡Buenas! Discada al natural, sin verduras ni salsas.',
     recipeId: 'discada_burrito',
     patience: 100,
     specialMods: {
@@ -131,7 +126,6 @@ const CUSTOMERS = [
     name: 'Gonzalo',
     state: 'Coahuila 🍳',
     dialog: '¡Compadre! Échame el burrito de discada con frijoles y queso, pero sin ninguna verdura ni salsa. Nada más la carne y el queso, bien caliente.',
-    shortDialog: '¡Compadre! Discada, pero sin ninguna verdura, ¿ya?',
     recipeId: 'discada_burrito',
     patience: 100,
     specialMods: { noVeg: true },
@@ -146,7 +140,6 @@ const CUSTOMERS = [
     name: 'Esperanza',
     state: 'Sonora 🌵',
     dialog: '¡Buenas! Quiero mi taco de asada con guacamole y cebollita, pero de favor échale también su salsita roja. ¡Me gusta bien picosito, pariente!',
-    shortDialog: '¡Buenas! Taco de asada con su salsita roja, bien picosito.',
     recipeId: 'asada_taco',
     patience: 100,
     specialMods: { requireExtra: ['salsa-roja'] },
@@ -300,8 +293,8 @@ function loadCustomer() {
   resetKitchenState();
   
   // Actualizar UI del cliente
-  document.getElementById('customer-state-origin').innerText = `${state.currentCustomer.name} — ${state.currentCustomer.state}`;
-  document.getElementById('customer-dialog').innerText = `"${state.currentCustomer.shortDialog || state.currentCustomer.dialog}"`;
+  document.getElementById('customer-state-origin').innerText = `${state.currentCustomer.name} (Procedencia: ${state.currentCustomer.state})`;
+  document.getElementById('customer-dialog').innerText = `"${state.currentCustomer.dialog}"`;
   
   // Dibujar Avatar Cowboy
   const avatarBox = document.getElementById('customer-avatar');
@@ -403,9 +396,6 @@ function resetKitchenState() {
   document.getElementById('cook-progress').style.width = '0%';
   document.getElementById('cook-status-text').innerText = 'Crudo';
   
-  // Limpiar checkmarks del ticket
-  document.querySelectorAll('.oi-item.done').forEach(el => el.classList.remove('done'));
-
   // Habilitar / Deshabilitar Botones
   toggleIngredientButtons(false);
   updateKitchenButtonsState();
@@ -439,122 +429,83 @@ function updateKitchenButtonsState() {
   }
 }
 
-// --- ACTUALIZAR LISTA DE ORDEN (CHECKLIST PIZZERÍA) ---
-const OI_EMOJI = {
-  'harina-grande': '🫓', 'harina-chica': '🫓', 'maiz': '🌽',
-  'frijoles': '🫘', 'guacamole': '🥑',
-  'asada': '🥩', 'discada': '🍳', 'machaca': '🥚', 'pescado': '🐟',
-  'queso': '🧀', 'cebolla-cilantro': '🌿', 'repollo': '🥬',
-  'rajas': '🌶️', 'salsa-roja': '🔴', 'salsa-verde': '🟢', 'limon': '🍋',
-};
-const OI_COLOR = {
-  'harina-grande': '#eae1d4', 'harina-chica': '#ddd0c0', 'maiz': '#f4d03f',
-  'frijoles': '#5c3a21', 'guacamole': '#7cb342',
-  'asada': '#8d5524', 'discada': '#7f2d21', 'machaca': '#c89b30', 'pescado': '#f0c040',
-  'queso': '#e8e070', 'cebolla-cilantro': '#27ae60', 'repollo': '#9ecf8a',
-  'rajas': '#1b8a5e', 'salsa-roja': '#e74c3c', 'salsa-verde': '#2ecc71', 'limon': '#f1c40f',
-};
-const OI_LABEL = {
-  'harina-grande': 'Harina G.', 'harina-chica': 'Harina Ch.', 'maiz': 'Maíz',
-  'frijoles': 'Frijoles', 'guacamole': 'Guacamole',
-  'asada': 'Asada', 'discada': 'Discada', 'machaca': 'Machaca', 'pescado': 'Pescado',
-  'queso': 'Queso', 'cebolla-cilantro': 'Cebolla/Cil.', 'repollo': 'Repollo',
-  'rajas': 'Rajas', 'salsa-roja': 'S. Roja', 'salsa-verde': 'S. Verde', 'limon': 'Limón',
-};
-
+// --- ACTUALIZAR TICKET DE COCINA ---
 function updateKitchenTicket(customer) {
-  const checklistDiv = document.getElementById('order-checklist');
+  const ticketDiv = document.getElementById('kitchen-ticket');
+  const ticketId = document.getElementById('ticket-id');
   const ticketList = document.getElementById('ticket-list');
-
+  
   if (!customer) {
-    checklistDiv.classList.add('hidden');
+    ticketDiv.classList.add('hidden');
     return;
   }
-
+  
   const recipe = Object.values(RECIPES).find(r => r.id === customer.recipeId);
   if (!recipe) return;
-
-  document.getElementById('checklist-num').innerText = state.customerIndex + 1;
+  
+  ticketId.innerText = state.customerIndex + 1;
   ticketList.innerHTML = '';
-
-  const addItem = (id, key, extraClass) => {
-    const li = document.createElement('li');
-    li.className = 'oi-item' + (extraClass ? ' ' + extraClass : '');
-    li.id = id;
-    li.innerHTML =
-      `<span class="oi-dot" style="background:${OI_COLOR[key] || '#888'}"></span>` +
-      `<span class="oi-emoji">${OI_EMOJI[key] || '•'}</span>` +
-      `<span class="oi-label">${OI_LABEL[key] || key}</span>` +
-      `<span class="oi-check">✓</span>`;
-    ticketList.appendChild(li);
-  };
-
+  
   // Tortilla
-  addItem('oi-tortilla', recipe.tortilla);
-
-  // Base/untable
+  const tortillaMap = { 'harina-grande': 'Harina G.', 'harina-chica': 'Harina Ch.', 'maiz': 'Maíz' };
+  const liTortilla = document.createElement('li');
+  liTortilla.innerHTML = `<span>Tortilla:</span> <strong>${tortillaMap[recipe.tortilla] || recipe.tortilla}</strong>`;
+  ticketList.appendChild(liTortilla);
+  
+  // Untable
   if (recipe.spread) {
-    addItem('oi-spread', recipe.spread);
+    const liSpread = document.createElement('li');
+    liSpread.innerHTML = `<span>Base:</span> <strong>${recipe.spread === 'frijoles' ? 'Frijoles' : 'Guacamole'}</strong>`;
+    ticketList.appendChild(liSpread);
   }
-
-  // Toppings requeridos (uno por fila)
-  recipe.requiredToppings.forEach(top => addItem('oi-' + top, top));
-
-  // Doblez
-  const foldLi = document.createElement('li');
-  foldLi.className = 'oi-item oi-action-item';
-  foldLi.id = 'oi-fold';
-  const foldEmoji = recipe.fold === 'taco' ? '🌮' : '🌯';
-  const foldLabel = recipe.fold === 'taco' ? 'Doblar: Taco' : 'Doblar: Burrito';
-  foldLi.innerHTML =
-    `<span class="oi-dot" style="background:#f39c12"></span>` +
-    `<span class="oi-emoji">${foldEmoji}</span>` +
-    `<span class="oi-label">${foldLabel}</span>` +
-    `<span class="oi-check">✓</span>`;
-  ticketList.appendChild(foldLi);
-
-  // Corte
-  if (recipe.cut) {
-    const cutLi = document.createElement('li');
-    cutLi.className = 'oi-item oi-action-item';
-    cutLi.id = 'oi-cut';
-    cutLi.innerHTML =
-      `<span class="oi-dot" style="background:#95a5a6"></span>` +
-      `<span class="oi-emoji">🔪</span>` +
-      `<span class="oi-label">Cortar mitad</span>` +
-      `<span class="oi-check">✓</span>`;
-    ticketList.appendChild(cutLi);
+  
+  // Ingredientes
+  if (recipe.requiredToppings && recipe.requiredToppings.length > 0) {
+    const liToppings = document.createElement('li');
+    const tops = recipe.requiredToppings.map(t => {
+      if (t === 'asada') return 'Asada';
+      if (t === 'machaca') return 'Machaca';
+      if (t === 'discada') return 'Discada';
+      if (t === 'pescado') return 'Pescado';
+      if (t === 'cebolla-cilantro') return 'Cebolla/Cil';
+      if (t === 'repollo') return 'Repollo';
+      if (t === 'queso') return 'Queso';
+      if (t === 'rajas') return 'Rajas';
+      if (t === 'salsa-roja') return 'S. Roja';
+      if (t === 'salsa-verde') return 'S. Verde';
+      if (t === 'limon') return 'Limón';
+      return t;
+    }).join(', ');
+    liToppings.innerHTML = `<span>Relleno:</span> <strong>${tops}</strong>`;
+    ticketList.appendChild(liToppings);
   }
-
-  // Nota: sin verduras
+  
+  // Doblez y Corte
+  const liFold = document.createElement('li');
+  let foldText = recipe.fold === 'taco' ? 'Taco' : 'Burrito';
+  if (recipe.cut) foldText += ' (Cortado)';
+  liFold.innerHTML = `<span>Estilo:</span> <strong>${foldText}</strong>`;
+  ticketList.appendChild(liFold);
+  
+  // Notas Especiales
   if (customer.specialMods && customer.specialMods.noVeg) {
-    const modLi = document.createElement('li');
-    modLi.className = 'oi-item oi-noveg full-width';
-    modLi.innerHTML = `<span class="oi-emoji">🚫</span><span class="oi-label">¡SIN VERDURAS ni salsas!</span>`;
-    ticketList.appendChild(modLi);
+    const liMod = document.createElement('li');
+    liMod.innerHTML = `<span>Nota:</span> <strong style="color:red">¡SIN VERDURAS!</strong>`;
+    ticketList.appendChild(liMod);
   }
-
-  // Extras requeridos
   if (customer.specialMods && customer.specialMods.requireExtra) {
+    const extraLabels = { 'salsa-roja': 'S. Roja', 'salsa-verde': 'S. Verde', limon: 'Limón', queso: 'Queso', 'cebolla-cilantro': 'Cebolla/Cil.' };
     customer.specialMods.requireExtra.forEach(extra => {
-      const extraLi = document.createElement('li');
-      extraLi.className = 'oi-item oi-extra-item full-width';
-      extraLi.id = 'oi-extra-' + extra;
-      extraLi.innerHTML =
-        `<span class="oi-dot" style="background:${OI_COLOR[extra] || '#f39c12'}"></span>` +
-        `<span class="oi-emoji">➕${OI_EMOJI[extra] || ''}</span>` +
-        `<span class="oi-label">${OI_LABEL[extra] || extra} (extra)</span>` +
-        `<span class="oi-check">✓</span>`;
-      ticketList.appendChild(extraLi);
+      const liMod = document.createElement('li');
+      liMod.innerHTML = `<span>Extra:</span> <strong style="color:orange">+ ${extraLabels[extra] || extra}</strong>`;
+      ticketList.appendChild(liMod);
     });
   }
 
-  checklistDiv.classList.remove('hidden');
-}
-
-function checkOffTicketItem(id) {
-  const el = document.getElementById(id);
-  if (el && !el.classList.contains('done')) el.classList.add('done');
+  // Animación de aparición
+  ticketDiv.classList.remove('hidden');
+  ticketDiv.style.animation = 'none';
+  setTimeout(() => ticketDiv.style.animation = 'ticket-slide-in 0.5s ease-out forwards', 10);
 }
 
 // --- ACTUALIZAR BOTONES (LÓGICA MEJORADA) ---
@@ -579,9 +530,7 @@ function setupKitchenEvents() {
       document.getElementById('tortilla-canvas').classList.remove('tortilla-empty');
       const visualDisc = document.getElementById('visual-tortilla');
       visualDisc.classList.add(`tortilla-${type}`);
-
-      checkOffTicketItem('oi-tortilla');
-
+      
       // Habilitar ingredientes
       toggleIngredientButtons(true);
       
@@ -607,8 +556,6 @@ function setupKitchenEvents() {
       state.dayCosts += cost;
       updateHUD();
       
-      checkOffTicketItem('oi-spread');
-
       // Renderizar untable cubriendo la tortilla
       const spreadLayer = document.getElementById('visual-spread');
       spreadLayer.className = `spread-layer spread-${type}`;
@@ -685,22 +632,11 @@ function setupKitchenEvents() {
       
       if (distance <= radius && !state.isCooking) {
         state.currentOrder.toppings.push(dragType);
-        const cost = INGREDIENT_COSTS[dragType] / 3;
+        const cost = INGREDIENT_COSTS[dragType] / 3; 
         state.money -= cost;
         state.dayCosts += cost;
         updateHUD();
-
-        // Marcar en el ticket si es un ingrediente requerido o extra pedido
-        const _cust = state.currentCustomer;
-        const _rec = Object.values(RECIPES).find(r => r.id === _cust.recipeId);
-        if (_rec && _rec.requiredToppings.includes(dragType)) {
-          checkOffTicketItem('oi-' + dragType);
-        }
-        if (_cust.specialMods && _cust.specialMods.requireExtra &&
-            _cust.specialMods.requireExtra.includes(dragType)) {
-          checkOffTicketItem('oi-extra-' + dragType);
-        }
-
+        
         spawnSingleTopping(dragType, offsetX, offsetY);
       }
       dragType = null;
@@ -970,8 +906,7 @@ function foldMeal(style) {
   if (state.isCooking) stopCooking();
   
   state.currentOrder.folded = style;
-  checkOffTicketItem('oi-fold');
-
+  
   // Renderizar doblez ocultando ingredientes sueltos y mostrando la forma final
   const visualToppings = document.getElementById('visual-toppings');
   const visualSpread = document.getElementById('visual-spread');
@@ -1022,8 +957,7 @@ function cutMeal() {
   if (window.sound) window.sound.playCut();
   
   state.currentOrder.cut = true;
-  checkOffTicketItem('oi-cut');
-
+  
   // Animación visual de corte (Línea roja cruzando)
   const canvas = document.getElementById('tortilla-canvas');
   const cutLine = document.createElement('div');
@@ -1245,10 +1179,6 @@ function serveOrder(timeout = false) {
   
   updateHUD();
   
-  // Ocultar checklist para dar espacio a la respuesta del cliente
-  const _checklist = document.getElementById('order-checklist');
-  if (_checklist) _checklist.classList.add('hidden');
-
   // Mostrar Diálogo de respuesta del cliente con burbuja temporal y mostrar ganancia
   let payoutText = finalPayout > 0 ? `<span style="color:green">+$${finalPayout.toFixed(2)}</span>` : `<span style="color:red">+$0.00 (Rechazado)</span>`;
   document.getElementById('customer-dialog').innerHTML = `<strong>${customer.name}:</strong> "${responseText}" <br><b>${payoutText}</b>`;
@@ -1286,11 +1216,10 @@ function updateHUD() {
 // --- FIN DEL DÍA (RESUMEN) ---
 function endDay() {
   if (state.patienceInterval) clearInterval(state.patienceInterval);
-
+  
   // Ocultar juego y mostrar pantalla final
   document.getElementById('screen-game').classList.remove('active');
   document.getElementById('screen-summary').classList.add('active');
-  document.querySelector('.summary-subtitle').innerText = `Jornada ${state.day} terminada`;
   
   // Valores en el balance
   document.getElementById('sum-sales').innerText = `$${state.daySales.toFixed(2)}`;

@@ -631,7 +631,7 @@ body {
 }
 
 .col-right {
-  min-height: 0;
+  overflow-y: auto;
 }
 
 .wood-shelf {
@@ -1349,9 +1349,9 @@ body {
   border-radius: 20px;
   padding: 10px;
   flex-grow: 1;
-  min-height: 0;
   box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), var(--shadow-game);
   overflow-y: auto;
+  max-height: 100%;
 }
 
 .clay-pots-shelf h4 {

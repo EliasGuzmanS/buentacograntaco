@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Permanent+Marker&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=15">
 </head>
 <body>
   <!-- Contenedor Principal del Juego -->
@@ -17,22 +17,26 @@
     <!-- PANTALLA DE INICIO (SPLASH) -->
     <div id="screen-splash" class="screen active">
       <div class="desert-background">
+        <div class="stars-layer"></div>
         <div class="sun"></div>
+        <div class="horizon-glow"></div>
         <div class="mountains"></div>
         <div class="cacti">
           <div class="cactus c1"></div>
           <div class="cactus c2"></div>
+          <div class="cactus c3"></div>
+          <div class="cactus c4"></div>
         </div>
       </div>
       <div class="splash-content animate-fade-in">
         <div class="badge">NIVEL NORTEÑO 🌵</div>
         <h1 class="game-title">El Comal <br><span>del Norte</span></h1>
         <p class="game-subtitle">¡Buena Masa, Buen Burrito!</p>
-        
         <div class="action-buttons">
-          <button id="btn-start-game" class="btn primary-btn pulse-anim">Iniciar Jornada</button>
+          <button id="btn-start-game" class="btn primary-btn pulse-anim">🌮 Iniciar Jornada</button>
           <button id="btn-open-recetario-splash" class="btn secondary-btn">📖 Recetario</button>
         </div>
+        <p class="splash-credits">El Comal del Norte — LudicJam 2026</p>
       </div>
     </div>
 
@@ -67,9 +71,22 @@
         
         <!-- Pizarrón / Burbuja de diálogo del Norte -->
         <div class="dialog-board chalkboard">
-          <div class="customer-state-tag" id="customer-state-origin">Procedencia: Sonora</div>
-          <p id="customer-dialog">"¡Qué onda pariente! Prepárame un buen taco de carne asada estilo Hermosillo."</p>
-          
+          <div class="dialog-top">
+            <div class="customer-state-tag" id="customer-state-origin">Procedencia: Sonora</div>
+            <p id="customer-dialog">Esperando al siguiente cliente...</p>
+          </div>
+
+          <!-- Lista de orden visual (pizzería) -->
+          <div id="order-checklist" class="order-checklist hidden">
+            <div class="checklist-header">
+              <span>📋 COMANDA</span>
+              <span>#<span id="checklist-num">1</span></span>
+            </div>
+            <ul id="ticket-list" class="ticket-checklist">
+              <!-- Generado por JS -->
+            </ul>
+          </div>
+
           <!-- Paciencia estilo Chile Picante -->
           <div class="chili-patience-container">
             <span class="chili-icon">🌶️</span>
@@ -78,15 +95,6 @@
             </div>
             <span class="chili-heat" id="patience-pct">100%</span>
           </div>
-        </div>
-
-        <!-- Ticket de Cocina Flotante -->
-        <div id="kitchen-ticket" class="kitchen-ticket hidden">
-          <div class="ticket-pin">📌</div>
-          <div class="ticket-header">Comanda</div>
-          <ul id="ticket-list" class="ticket-list">
-            <!-- Rellenado por JS -->
-          </ul>
         </div>
       </section>
 
@@ -318,7 +326,6 @@
                 <h3>Taco de Carne Asada</h3>
                 <span class="state-badge-small">Sonora 🌵</span>
               </div>
-              <img src="taco_asada_1779538963899.png" alt="Taco de Carne Asada" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
               <p class="recipe-desc">El clásico de clásicos de las parrilladas sonorenses.</p>
               <ul class="recipe-specs">
                 <li><strong>Tortilla:</strong> Harina Chica</li>
@@ -336,7 +343,6 @@
                 <h3>Burrito de Machaca</h3>
                 <span class="state-badge-small">Chihuahua 🏔️</span>
               </div>
-              <img src="burrito_machaca_1779538976949.png" alt="Burrito de Machaca" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
               <p class="recipe-desc">Carne de res deshidratada guisada con huevo y verduras.</p>
               <ul class="recipe-specs">
                 <li><strong>Tortilla:</strong> Harina Grande</li>
@@ -354,7 +360,6 @@
                 <h3>Burrito de Discada</h3>
                 <span class="state-badge-small">Coahuila & Durango 🍳</span>
               </div>
-              <img src="burrito_discada_1779538989185.png" alt="Burrito de Discada" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
               <p class="recipe-desc">Mezcla tradicional de carnes y embutidos cocinados en disco de arado.</p>
               <ul class="recipe-specs">
                 <li><strong>Tortilla:</strong> Harina Grande</li>
@@ -373,7 +378,6 @@
                 <h3>Taco de Pescado Ensenada</h3>
                 <span class="state-badge-small">Baja California 🌊</span>
               </div>
-              <img src="taco_pescado_1779539001401.png" alt="Taco de Pescado" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
               <p class="recipe-desc">Pescado frito en tempura capeado al estilo de Ensenada.</p>
               <ul class="recipe-specs">
                 <li><strong>Tortilla:</strong> Maíz 🌽</li>
@@ -407,7 +411,7 @@
   </div>
 
   <!-- Scripts -->
-  <script src="sound.js?v=11"></script>
-  <script src="game.js?v=11"></script>
+  <script src="sound.js?v=12"></script>
+  <script src="game.js?v=12"></script>
 </body>
 </html>
