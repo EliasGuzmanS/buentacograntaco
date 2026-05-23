@@ -1,0 +1,1614 @@
+/* El Comal del Norte - Estilos Temáticos de Videojuego (styles.css) */
+
+@import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Outfit:wght@300;400;600;800&display=swap');
+
+:root {
+  /* Paleta del Desierto & Cocina Norteña */
+  --clay-terracotta: #d35400;
+  --clay-light: #e67e22;
+  --wood-dark: #3e2723;
+  --wood-medium: #5d4037;
+  --wood-light: #8d6e63;
+  --wood-grain: #a1887f;
+  --desert-sun: #f39c12;
+  --comal-iron: #2c3e50;
+  --comal-burn: #1a252f;
+  --chalkboard-green: #1b4d3e;
+  --neon-gold: #fdcb6e;
+  --chili-red: #d63031;
+  --tortilla-harina: #eae1d4;
+  --tortilla-maiz: #f4d03f;
+  --bean-brown: #5c3a21;
+  --avocado-green: #7cb342;
+  --queso-menonita: #fff59d;
+  
+  --font-game: 'Outfit', sans-serif;
+  --font-hand: 'Permanent Marker', cursive;
+  
+  --shadow-game: 0 8px 0 rgba(0, 0, 0, 0.2), 0 15px 25px rgba(0, 0, 0, 0.3);
+}
+
+/* Reset de Controles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-game);
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+body {
+  background-color: #111;
+  background-image: radial-gradient(circle, #222 0%, #050505 100%);
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: 10px;
+}
+
+/* CONTENEDOR DEL JUEGO */
+#game-container {
+  width: 100%;
+  max-width: 1150px;
+  height: 92vh;
+  min-height: 680px;
+  background: #3e2723; /* Madera base */
+  /* Textura de tablones de madera usando gradiente CSS */
+  background-image: 
+    linear-gradient(90deg, rgba(0,0,0,0.15) 3px, transparent 3px),
+    linear-gradient(0deg, rgba(0,0,0,0.08) 100%, transparent 100%);
+  background-size: 120px 100%, 100% 100%;
+  border: 12px solid #271410;
+  border-radius: 28px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.8), inset 0 0 60px rgba(0,0,0,0.5);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+}
+
+/* --- CONTROL DE PANTALLAS --- */
+.screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+}
+
+.screen.active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 10;
+}
+
+/* --- PANTALLA INICIO (ESTILO RETRO / DESIERTO) --- */
+#screen-splash {
+  background: linear-gradient(180deg, #1e272e 0%, #0c1116 100%);
+}
+
+.desert-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.sun {
+  position: absolute;
+  bottom: 20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 320px;
+  border-radius: 50%;
+  background: linear-gradient(to top, #ff7e5f, #feb47b);
+  filter: drop-shadow(0 0 40px #ff7e5f);
+  opacity: 0.8;
+  animation: glow-sun 4s infinite alternate;
+}
+
+@keyframes glow-sun {
+  from { filter: drop-shadow(0 0 30px #ff7e5f); }
+  to { filter: drop-shadow(0 0 60px #feb47b); }
+}
+
+.mountains {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 40%;
+  background: linear-gradient(180deg, #2d1500 0%, #110800 100%);
+  clip-path: polygon(0 100%, 0 70%, 12% 50%, 25% 72%, 40% 40%, 55% 75%, 70% 45%, 85% 65%, 100% 35%, 100% 100%);
+  z-index: 2;
+}
+
+.cacti {
+  position: absolute;
+  bottom: 8%;
+  width: 100%;
+  height: 25%;
+  z-index: 3;
+}
+
+.cactus {
+  position: absolute;
+  width: 16px;
+  height: 80px;
+  background-color: #1e8449;
+  border-radius: 8px;
+  box-shadow: inset -4px 0 0 rgba(0,0,0,0.2);
+}
+
+.cactus::before, .cactus::after {
+  content: '';
+  position: absolute;
+  width: 30px;
+  height: 14px;
+  border-top: 14px solid #1e8449;
+  border-radius: 7px 7px 0 0;
+}
+
+.cactus::before {
+  left: -20px;
+  top: 20px;
+  border-left: 14px solid #1e8449;
+  transform: rotate(-12deg);
+}
+
+.cactus::after {
+  right: -20px;
+  top: 32px;
+  border-right: 14px solid #1e8449;
+  transform: rotate(12deg);
+}
+
+.cactus.c1 { left: 18%; transform: scale(1.3); }
+.cactus.c2 { right: 22%; transform: scale(1) scaleX(-1); }
+
+.splash-content {
+  position: relative;
+  z-index: 10;
+  margin: auto;
+  max-width: 600px;
+  text-align: center;
+  padding: 30px;
+  background: rgba(0, 0, 0, 0.45);
+  border: 4px solid #fff;
+  border-radius: 24px;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+}
+
+.badge {
+  font-family: var(--font-hand);
+  background-color: #d35400;
+  color: #fff;
+  font-size: 1.1rem;
+  padding: 8px 20px;
+  border-radius: 10px;
+  display: inline-block;
+  margin-bottom: 20px;
+  border: 3px solid #ff9f43;
+  transform: rotate(-3deg);
+  box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+}
+
+.game-title {
+  font-family: var(--font-hand);
+  font-size: 4.8rem;
+  line-height: 1;
+  color: #f1c40f;
+  text-shadow: 4px 4px 0px #c0392b, 8px 8px 0px #000;
+  margin-bottom: 12px;
+  transform: scale(1.05);
+}
+
+.game-title span {
+  color: #fff;
+}
+
+.game-subtitle {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #ebd3be;
+  margin-bottom: 40px;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+}
+
+/* BOTONES DE SPLASH */
+.btn {
+  padding: 16px 36px;
+  border-radius: 18px;
+  border: none;
+  font-size: 1.2rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(0,0,0,0.3);
+  transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.primary-btn {
+  background: linear-gradient(to bottom, #f1c40f 0%, #f39c12 100%);
+  color: #5d4037;
+  border: 4px solid #fff;
+}
+
+.primary-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+}
+
+.secondary-btn {
+  background: #7f8c8d;
+  color: #fff;
+  border: 4px solid #bdc3c7;
+}
+
+.secondary-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.3);
+}
+
+.pulse-anim {
+  animation: bounce-pulse 2s infinite alternate;
+}
+
+@keyframes bounce-pulse {
+  from { transform: scale(1); }
+  to { transform: scale(1.05); }
+}
+
+.wooden-board {
+  background: #5d4037;
+  background-image: linear-gradient(rgba(0,0,0,0.2) 2px, transparent 2px);
+  background-size: 100% 8px;
+  border-bottom: 8px solid #271410;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 30px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+  z-index: 100;
+  position: relative;
+}
+
+.hud-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-item .label {
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  color: #ffcc80;
+  text-transform: uppercase;
+}
+
+.hud-item .value {
+  font-family: var(--font-game);
+  font-size: 1.6rem;
+  font-weight: 800;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.wallet .value {
+  color: #2ecc71;
+}
+
+.state-badge {
+  font-family: var(--font-hand);
+  font-size: 1.1rem;
+  color: #f1c40f;
+  text-shadow: 2px 2px 0 #7f8c8d;
+}
+
+/* BOTÓN DE CLIPOPARD (RECETARIO) */
+.clipboard-btn {
+  background: #f39c12;
+  border: 3px solid #fff;
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #fff;
+  box-shadow: 0 4px 0 #d35400;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.clipboard-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #d35400;
+}
+
+/* --- CLIENTE DETRÁS DE LA BARRA --- */
+#customer-section {
+  height: 28%;
+  display: flex;
+  align-items: flex-end;
+  gap: 25px;
+  padding: 0 40px 10px 40px;
+  position: relative;
+  background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0) 100%);
+  border-bottom: 8px solid #1a0c0a;
+}
+
+.counter-top-bg {
+  /* Fondo limpio para que no obstruya ni se vea raro */
+  background-color: transparent;
+}
+
+.window-frame {
+  display: none;
+}
+
+.customer-avatar-box {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  position: relative;
+  z-index: 5;
+  animation: slide-customer-in 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes slide-customer-in {
+  from { transform: translateX(-150px) rotate(-15deg); opacity: 0; }
+  to { transform: translateX(0) rotate(0); opacity: 1; }
+}
+
+/* PIZARRÓN DE DIÁLOGOS (CHALKBOARD) */
+.dialog-board {
+  flex-grow: 1;
+  background-color: var(--chalkboard-green);
+  border: 10px solid #8d6e63;
+  border-radius: 8px;
+  padding: 14px 20px;
+  box-shadow: var(--shadow-game), inset 0 0 20px rgba(0,0,0,0.6);
+  position: relative;
+  margin-bottom: 8px;
+  z-index: 5;
+  min-height: 90px;
+}
+
+.chalkboard::after {
+  content: '';
+  position: absolute;
+  left: -24px;
+  bottom: 20px;
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-right: 15px solid #8d6e63;
+}
+
+.customer-state-tag {
+  font-family: var(--font-hand);
+  font-size: 0.9rem;
+  color: #f1c40f;
+  margin-bottom: 4px;
+  letter-spacing: 1px;
+}
+
+#customer-dialog {
+  font-size: 1.15rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #fff;
+  font-style: italic;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+}
+
+/* PACIENCIA ESTILO CHILE */
+.chili-patience-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chili-icon {
+  font-size: 1.4rem;
+  filter: drop-shadow(0 2px 2px #000);
+}
+
+.chili-bar-bg {
+  width: 200px;
+  height: 12px;
+  background-color: rgba(0, 0, 0, 0.4);
+  border-radius: 6px;
+  border: 2px solid #5d4037;
+  overflow: hidden;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
+}
+
+.chili-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #2ecc71 0%, #f1c40f 60%, #e74c3c 100%);
+  transition: width 0.1s linear;
+}
+
+.chili-heat {
+  font-family: var(--font-hand);
+  font-size: 0.85rem;
+  color: #e74c3c;
+}
+
+/* --- TABLERO DE COCINA (IMERSIVO) --- */
+.kitchen-countertop {
+  flex-grow: 1;
+  display: grid;
+  grid-template-columns: 20% 50% 30%;
+  background: #8d6e63; /* Madera intermedia */
+  background-image: radial-gradient(rgba(255,255,255,0.05) 1px, transparent 0);
+  background-size: 24px 24px;
+  border-bottom: 12px solid #271410;
+  padding: 10px;
+  gap: 10px;
+  height: 56%;
+}
+
+.counter-column {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  height: 100%;
+  min-height: 0; /* Necesario para que el overflow en flex/grid funcione */
+}
+
+.wood-shelf {
+  background: #5d4037;
+  border: 4px solid #3e2723;
+  border-radius: 16px;
+  padding: 10px;
+  box-shadow: inset 0 4px 10px rgba(0,0,0,0.4), 0 4px 6px rgba(0,0,0,0.15);
+}
+
+.wood-shelf h4 {
+  font-family: var(--font-hand);
+  color: #ffcc80;
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+  text-align: center;
+  border-bottom: 2px dashed rgba(255,255,255,0.15);
+  padding-bottom: 4px;
+}
+
+/* CANASTA DE TORTILLAS (FIBRA/CESTO) */
+.tortilla-basket {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+.tortilla-basket-item {
+  width: 90%;
+  background: #d7ccc8;
+  border: 4px solid #8d6e63;
+  border-radius: 12px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  transition: transform 0.1s;
+}
+
+.tortilla-basket-item:hover {
+  transform: scale(1.03) translateY(-2px);
+  background: #ffeaa7;
+}
+
+/* Pilas de tortillas ilustradas */
+.basket-stack {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  position: relative;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+}
+
+.stack-harina-g {
+  background: var(--tortilla-harina);
+  border: 2px solid #dfd5c6;
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(139,90,43,0.15) 5px);
+}
+
+.stack-harina-c {
+  background: var(--tortilla-harina);
+  border: 2px solid #dfd5c6;
+  transform: scale(0.85);
+}
+
+.stack-maiz {
+  background: var(--tortilla-maiz);
+  border: 2px solid #e1b12c;
+  transform: scale(0.8);
+}
+
+.item-tag {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: #3e2723;
+  line-height: 1.1;
+}
+
+/* FRASCOS DE EXTRACTOS (UNTA-BASES) */
+.jars-grid {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.jar-item {
+  background: #efebe9;
+  border: 4px solid #a1887f;
+  border-radius: 12px;
+  padding: 8px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.2);
+  transition: all 0.1s;
+}
+
+.jar-item:hover:not(:disabled) {
+  transform: translateY(-3px);
+  background: #ffeaa7;
+  border-color: #f39c12;
+}
+
+.jar-item:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.jar-visual {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 2px solid #8d6e63;
+  margin-bottom: 4px;
+}
+
+.jar-beans { background-color: var(--bean-brown); }
+.jar-guac { background-color: var(--avocado-green); }
+
+.jar-tag {
+  font-size: 0.75rem;
+  font-weight: 800;
+  color: #3e2723;
+}
+
+/* --- COLUMNA CENTRAL: TABLA Y COMAL --- */
+.cutting-board-zone {
+  background: #d7ccc8; /* Madera de cortar clara */
+  border: 6px solid #a1887f;
+  border-radius: 20px;
+  padding: 10px;
+  flex: 1.1;
+  display: flex;
+  flex-direction: column;
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.2), var(--shadow-game);
+}
+
+.cutting-board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  border-bottom: 2px solid rgba(0,0,0,0.08);
+  padding-bottom: 4px;
+}
+
+.board-title {
+  font-family: var(--font-hand);
+  color: #5d4037;
+  font-size: 1.05rem;
+}
+
+.btn-trash-game {
+  background-color: #d63031;
+  color: #fff;
+  border: 2px solid #fff;
+  border-radius: 8px;
+  padding: 3px 10px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.canvas-wrapper-game {
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#tortilla-canvas {
+  width: 200px;
+  height: 200px;
+  background-color: rgba(255,255,255,0.2);
+  border: 4px dashed rgba(0,0,0,0.15);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.tortilla-empty::after {
+  content: 'Toca una tortilla de la canasta 🧺';
+  color: #5d4037;
+  font-weight: 800;
+  font-size: 0.85rem;
+  text-align: center;
+  max-width: 140px;
+}
+
+/* Tortillas Visuales */
+.tortilla-disc {
+  border-radius: 50%;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+  transition: all 0.3s ease;
+  position: absolute;
+  z-index: 1;
+}
+
+.tortilla-harina-grande {
+  width: 180px;
+  height: 180px;
+  background-color: var(--tortilla-harina);
+  background-image: 
+    radial-gradient(circle at 30% 25%, rgba(139, 90, 43, 0.18) 12px, transparent 15px),
+    radial-gradient(circle at 75% 65%, rgba(139, 90, 43, 0.12) 8px, transparent 10px),
+    radial-gradient(circle at 60% 30%, rgba(139, 90, 43, 0.15) 15px, transparent 18px);
+  border: 2px solid #dfd5c6;
+}
+
+.tortilla-harina-chica {
+  width: 135px;
+  height: 135px;
+  background-color: var(--tortilla-harina);
+  background-image: 
+    radial-gradient(circle at 40% 45%, rgba(139, 90, 43, 0.12) 8px, transparent 10px),
+    radial-gradient(circle at 70% 35%, rgba(139, 90, 43, 0.15) 10px, transparent 12px);
+  border: 2px solid #dfd5c6;
+}
+
+.tortilla-maiz {
+  width: 130px;
+  height: 130px;
+  background-color: var(--tortilla-maiz);
+  background-image: 
+    radial-gradient(circle at 35% 35%, rgba(197, 137, 18, 0.22) 6px, transparent 8px),
+    radial-gradient(circle at 65% 60%, rgba(197, 137, 18, 0.18) 12px, transparent 14px);
+  border: 2px solid #e1b12c;
+}
+
+/* Capas Untadas */
+.spread-layer {
+  position: absolute;
+  border-radius: 50%;
+  z-index: 2;
+  pointer-events: none;
+  opacity: 0.85;
+  transition: all 0.3s;
+}
+
+.spread-frijoles {
+  background-color: var(--bean-brown);
+  border: 1px solid #4a342c;
+}
+
+.spread-guacamole {
+  background-color: var(--avocado-green);
+  border: 1px solid #1e7e34;
+}
+
+/* Toppings e Ingredientes Visuales */
+.toppings-container {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.visual-chunk {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  animation: fall-in 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes fall-in {
+  from {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+  to {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* Representaciones de Toppings sobre la tortilla (Texturas Realistas) */
+.t-asada, .t-discada, .t-machaca {
+  width: 55px;
+  height: 55px;
+  background-image: url('tex_carne_1779541085189.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+  transform: rotate(var(--rot));
+}
+
+.t-pescado {
+  width: 60px;
+  height: 40px;
+  background-image: url('tex_carne_1779541085189.png');
+  background-size: cover;
+  border-radius: 10px;
+  mix-blend-mode: multiply;
+  filter: sepia(0.8) hue-rotate(30deg) brightness(1.2); /* Tono frito dorado */
+  transform: rotate(var(--rot));
+}
+
+.t-queso {
+  width: 50px;
+  height: 50px;
+  background-image: url('tex_queso_1779541106820.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+  transform: rotate(var(--rot));
+}
+
+.t-cebolla-cilantro, .t-repollo, .t-rajas {
+  width: 45px;
+  height: 45px;
+  background-image: url('tex_verdura_1779541095901.png');
+  background-size: cover;
+  background-position: center;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+  transform: rotate(var(--rot));
+}
+
+.t-salsa-roja {
+  width: 55px;
+  height: 55px;
+  background-image: url('tex_salsa_1779541119198.png');
+  background-size: cover;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+  transform: rotate(var(--rot));
+}
+
+.t-salsa-verde, .t-limon {
+  width: 55px;
+  height: 55px;
+  background-image: url('tex_salsa_1779541119198.png');
+  background-size: cover;
+  border-radius: 50%;
+  mix-blend-mode: multiply;
+  filter: hue-rotate(100deg); /* Verde/Limon */
+  transform: rotate(var(--rot));
+}
+
+/* Efectos de Doblado Visual en la tabla */
+.folded-visual {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 5;
+  pointer-events: none;
+  display: none;
+  justify-content: center;
+  align-items: center;
+}
+
+.folded-taco-shape {
+  width: 140px;
+  height: 70px;
+  background-color: inherit;
+  border-bottom-left-radius: 70px;
+  border-bottom-right-radius: 70px;
+  box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+  border: 2px solid inherit;
+  transform-origin: top center;
+  animation: fold-down 0.4s ease forwards;
+}
+
+.folded-burrito-shape {
+  width: 75px;
+  height: 160px;
+  border-radius: 25px;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+  animation: roll-up 0.5s ease forwards;
+}
+
+.cut-line {
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  background-color: rgba(231, 76, 60, 0.85);
+  box-shadow: 0 0 8px #e74c3c;
+  z-index: 10;
+  animation: slash-cut 0.3s ease-out;
+}
+
+/* Elemento cocinando en el comal */
+#comal-item {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background-color: rgba(253, 250, 246, 0.95);
+  z-index: 5;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: background-color 0.5s;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  font-size: 0.65rem;
+  color: var(--bean-brown);
+}
+
+.comal-item-taco {
+  border-radius: 35px 35px 0 0 !important;
+  height: 35px !important;
+}
+
+.comal-item-burrito {
+  border-radius: 15px !important;
+  width: 35px !important;
+  height: 75px !important;
+}
+
+/* Humo Animado */
+.smoke-cloud {
+  position: absolute;
+  background-color: rgba(220, 220, 220, 0.3);
+  border-radius: 50%;
+  animation: rise-smoke 1.5s ease-out forwards;
+  filter: blur(4px);
+  z-index: 8;
+  pointer-events: none;
+}
+
+/* --- DIBUJO DE AVATAR (NORTEÑO COWBOY) --- */
+.cowboy-wrapper {
+  position: relative;
+  width: 100px;
+  height: 100px;
+  overflow: visible;
+  margin-bottom: -15px; /* Hace que asome justo desde detrás del borde de la barra! */
+}
+
+.avatar-body {
+  position: absolute;
+  bottom: 0;
+  left: 10px;
+  width: 80px;
+  height: 50px;
+  background-color: var(--shirt-color, #d15234);
+  border-radius: 25px 25px 0 0;
+  z-index: 1;
+  border: 3.5px solid #000;
+}
+
+.avatar-head {
+  position: absolute;
+  bottom: 35px;
+  left: 25px;
+  width: 50px;
+  height: 50px;
+  background-color: #ffd2b2;
+  border-radius: 50%;
+  z-index: 2;
+  border: 3.5px solid #000;
+  box-shadow: inset -3px -3px 0 rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+
+.avatar-eyes {
+  position: absolute;
+  top: 18px;
+  left: 10px;
+  width: 30px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.avatar-eye {
+  width: 6px;
+  height: 6px;
+  background-color: #000;
+  border-radius: 50%;
+}
+
+.avatar-mustache {
+  position: absolute;
+  bottom: 12px;
+  left: 10px;
+  width: 30px;
+  height: 9px;
+  background-color: var(--hair-color, #4a342c);
+  clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+  border-radius: 1px;
+  z-index: 3;
+}
+
+.avatar-beard {
+  position: absolute;
+  bottom: -2px;
+  left: 7px;
+  width: 36px;
+  height: 20px;
+  background-color: var(--hair-color, #4a342c);
+  border-radius: 0 0 18px 18px;
+  z-index: 2;
+  border: 3px solid #000;
+}
+
+.avatar-hat {
+  position: absolute;
+  top: -20px;
+  left: 10px;
+  width: 80px;
+  height: 40px;
+  z-index: 5;
+}
+
+.hat-brim {
+  position: absolute;
+  bottom: 5px;
+  left: 0;
+  width: 80px;
+  height: 10px;
+  background-color: var(--hat-color, #8b5a2b);
+  border-radius: 10px;
+  border: 3.5px solid #000;
+  box-shadow: 0 3px 5px rgba(0,0,0,0.3);
+}
+
+.hat-crown {
+  position: absolute;
+  top: 0;
+  left: 18px;
+  width: 44px;
+  height: 28px;
+  background-color: var(--hat-color, #8b5a2b);
+  border-radius: 16px 16px 4px 4px;
+  border: 3.5px solid #000;
+  border-bottom: none;
+}
+
+.hat-band {
+  position: absolute;
+  bottom: 5px;
+  left: 18px;
+  width: 44px;
+  height: 4px;
+  background-color: #d63031;
+  z-index: 6;
+}
+
+/* Animación de entrada y cocción */
+@keyframes rise-smoke {
+  0% { transform: translateY(10px) scale(0.5); opacity: 0; }
+  50% { opacity: 0.5; }
+  100% { transform: translateY(-40px) scale(1.6); opacity: 0; }
+}
+
+@keyframes slash-cut {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+
+@keyframes fold-down {
+  from { transform: scaleY(0.2) translateY(-20px); opacity: 0.5; }
+  to { transform: scaleY(1) translateY(0); opacity: 1; }
+}
+
+@keyframes roll-up {
+  from { transform: scale(0.6) rotate(-20deg); opacity: 0.5; }
+  to { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+
+/* ZONA DEL COMAL METÁLICO */
+.comal-zone-game {
+  background: #34495e;
+  border: 6px solid #2c3e50;
+  border-radius: 20px;
+  padding: 8px;
+  flex: 0.9;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.5), var(--shadow-game);
+  position: relative;
+}
+
+.comal-metal-grill {
+  flex-grow: 1;
+  background: radial-gradient(circle, #2d3436 0%, #1e272e 100%);
+  border-radius: 12px;
+  border: 3px solid #1a252f;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.comal-flame-glow {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 15px;
+  background: linear-gradient(to top, rgba(230, 126, 34, 0.8), transparent);
+  animation: heat-glow-pulse 1s infinite alternate;
+}
+
+@keyframes heat-glow-pulse {
+  from { opacity: 0.4; }
+  to { opacity: 0.9; }
+}
+
+.comal-skillet {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 5px solid #111;
+  background: #111;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Chispas del Comal */
+.sizzle-spark {
+  position: absolute;
+  width: 3px;
+  height: 3px;
+  background-color: #f1c40f;
+  border-radius: 50%;
+  opacity: 0;
+}
+
+.sizzle-spark.s1 { left: 30%; top: 30%; animation: spark-fly 1.2s infinite; }
+.sizzle-spark.s2 { right: 25%; bottom: 35%; animation: spark-fly 0.8s infinite 0.4s; }
+
+@keyframes spark-fly {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  50% { opacity: 1; }
+  100% { transform: translateY(-20px) scale(1.2); opacity: 0; }
+}
+
+/* CONTROLES DEL COMAL */
+.comal-dashboard-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.spatula-btn {
+  background: linear-gradient(to bottom, #bdc3c7 0%, #95a5a6 100%);
+  border: 3px solid #fff;
+  border-radius: 12px;
+  padding: 8px 14px;
+  color: #2c3e50;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #7f8c8d;
+}
+
+.spatula-btn:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 #7f8c8d;
+}
+
+.spatula-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gauge-container {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.gauge-status {
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
+  color: #ecf0f1;
+}
+
+.cook-bar-gauge {
+  height: 14px;
+  background: #111;
+  border-radius: 7px;
+  border: 2px solid #555;
+  position: relative;
+}
+
+.cook-bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #e67e22, #f1c40f, #e74c3c);
+  transition: width 0.1s linear;
+}
+
+.gauge-marker.perfect-zone {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  background-color: rgba(46, 204, 113, 0.45);
+  border-left: 2px dashed #2ecc71;
+  border-right: 2px dashed #2ecc71;
+}
+
+/* --- COLUMNA DERECHA: CAZUELA DE BARRO --- */
+.clay-pots-shelf {
+  background: #c0392b; /* Arcilla terracotta */
+  background-image: linear-gradient(rgba(0,0,0,0.15) 3px, transparent 3px);
+  background-size: 100% 20px;
+  border: 6px solid #7f2d21;
+  border-radius: 20px;
+  padding: 10px;
+  flex-grow: 1;
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.4), var(--shadow-game);
+  overflow-y: auto;
+  max-height: 100%;
+}
+
+.clay-pots-shelf h4 {
+  font-family: var(--font-hand);
+  color: #ffd2b2;
+  font-size: 0.95rem;
+  margin: 6px 0;
+  text-align: center;
+  border-bottom: 2px dotted rgba(255,255,255,0.2);
+}
+
+.bowls-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* CAZUELA DE BARRO INDIVIDUAL (BOWL) */
+.bowl-pot {
+  background: #e67e22; /* Barro */
+  border: 5px solid #d35400; /* Borde de barro cocido */
+  border-radius: 50%;
+  padding: 4px;
+  cursor: pointer;
+  box-shadow: 0 4px 0 #7f2d21, inset 0 2px 4px rgba(255,255,255,0.2);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: all 0.1s;
+}
+
+.bowl-pot:hover:not(:disabled) {
+  transform: translateY(-3px) scale(1.05);
+  border-color: #e67e22;
+}
+
+.bowl-pot:active:not(:disabled) {
+  transform: translateY(2px);
+  box-shadow: 0 1px 0 #7f2d21;
+}
+
+.bowl-pot:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  filter: grayscale(0.5);
+}
+
+/* Gráfico Interior de la Cazuela */
+.bowl-interior {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  box-shadow: inset 0 4px 8px rgba(0,0,0,0.6);
+  position: relative;
+  overflow: hidden;
+  border: 2px solid #5a2500;
+}
+
+/* Representaciones de guisados dentro de las cazuelas */
+.bowl-asada {
+  background: #5d4037;
+  background-image: radial-gradient(#1a0f08 4px, transparent 4px);
+  background-size: 10px 10px;
+}
+
+.bowl-discada {
+  background: #7f2d21;
+  background-image: repeating-linear-gradient(45deg, #4a1c17 0, #4a1c17 4px, transparent 4px, transparent 8px);
+}
+
+.bowl-machaca {
+  background: #e5b323;
+  background-image: radial-gradient(rgba(93,64,55,0.45) 3px, transparent 4px);
+  background-size: 8px 8px;
+}
+
+.bowl-fish {
+  background: #f1c40f;
+  background-image: linear-gradient(135deg, #d4ac0d 25%, transparent 25%, transparent 50%, #d4ac0d 50%);
+  background-size: 12px 12px;
+}
+
+.bowl-cheese {
+  background: var(--queso-menonita);
+  background-image: repeating-linear-gradient(0deg, #fff 0, #fff 2px, transparent 2px, transparent 4px);
+}
+
+.bowl-cilantro {
+  background: #27ae60;
+  background-image: radial-gradient(#2ecc71 2px, transparent 3px);
+  background-size: 6px 6px;
+}
+
+.bowl-cabbage {
+  background: #eef9e7;
+  background-image: repeating-linear-gradient(90deg, #27ae60 0, #27ae60 1px, transparent 1px, transparent 6px);
+}
+
+.bowl-rajas {
+  background: #1b4d3e;
+  background-image: linear-gradient(45deg, #113328 25%, transparent 25%);
+  background-size: 10px 10px;
+}
+
+.bowl-salsa-roja {
+  background: #c0392b;
+  background-image: radial-gradient(#ff7675 2px, transparent 3px);
+  background-size: 12px 12px;
+}
+
+.bowl-salsa-verde {
+  background: #2ecc71;
+  background-image: radial-gradient(#a3cb38 2px, transparent 3px);
+  background-size: 12px 12px;
+}
+
+.bowl-lime {
+  background: #27ae60;
+  background-image: radial-gradient(#f1c40f 6px, transparent 7px);
+  background-size: 16px 16px;
+}
+
+.bowl-tag {
+  font-family: var(--font-hand);
+  font-size: 0.8rem;
+  color: #fff;
+  margin-top: 3px;
+  text-shadow: 1px 1px 2px #000;
+}
+
+/* --- DECK / TABLADO DE ACCIONES --- */
+.wooden-deck {
+  background: #3e2723;
+  background-image: linear-gradient(90deg, rgba(0,0,0,0.2) 2px, transparent 2px);
+  background-size: 80px 100%;
+  border-top: 8px solid #271410;
+  height: 16%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 30px;
+  box-shadow: 0 -8px 20px rgba(0,0,0,0.3);
+  z-index: 10;
+}
+
+.deck-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.deck-label {
+  font-family: var(--font-hand);
+  color: #ffcc80;
+  font-size: 0.95rem;
+}
+
+/* BOTONES DE HERRAMIENTAS */
+.tool-btn {
+  background: linear-gradient(to bottom, #d7ccc8 0%, #b0bec5 100%);
+  border: 3px solid #3e2723;
+  border-radius: 12px;
+  padding: 10px 18px;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #3e2723;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.3);
+  transition: all 0.1s;
+}
+
+.tool-btn:hover:not(:disabled) {
+  background: #ffeaa7;
+  transform: translateY(-2px);
+}
+
+.tool-btn:active:not(:disabled) {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(0,0,0,0.3);
+}
+
+.tool-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* SERVIR ORDEN (BANDEJA METÁLICA) */
+.tray-btn {
+  background: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+  color: #fff;
+  border: 4px solid #fff;
+  border-radius: 16px;
+  padding: 12px 28px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  box-shadow: 0 5px 0 #1b6334;
+  cursor: pointer;
+  transition: all 0.1s;
+}
+
+.tray-btn:hover:not(:disabled) {
+  transform: scale(1.03);
+}
+
+.tray-btn:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 #1b6334;
+}
+
+.tray-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* --- FIN DE LA JORNADA --- */
+.wooden-box-summary {
+  background: #5d4037;
+  border: 8px solid #3e2723;
+  border-radius: 24px;
+  box-shadow: var(--shadow-game);
+}
+
+.text-stamp {
+  font-family: var(--font-hand);
+  color: #f1c40f;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.chalk-text {
+  font-style: italic;
+  color: #fdcb6e;
+}
+
+/* --- MODAL CLIPBOARD --- */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; width: 100%; height: 100%;
+  background: rgba(0,0,0,0.7);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.modal.active {
+  display: flex;
+}
+.modal-body {
+  overflow-y: auto;
+  flex-grow: 1;
+  max-height: 60vh;
+}
+.clipboard-modal {
+  background: #fff8e7; /* Papel del recetario */
+  border: 12px solid #8d6e63;
+  border-radius: 20px;
+  color: #3e2723;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+  width: 90%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+}
+
+.clipboard-modal .modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 3px solid #8d6e63;
+  padding: 15px;
+}
+
+.clipboard-modal .modal-header h2 {
+  font-family: var(--font-hand);
+  color: #5d4037;
+  margin: 0;
+}
+
+.clipboard-modal .btn-close {
+  color: #5d4037;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.clipboard-modal .btn-close:hover {
+  color: var(--clay-terracotta);
+}
+
+.recipe-card {
+  background-color: rgba(93, 64, 55, 0.08) !important;
+  border: 2px dashed #8d6e63 !important;
+  color: #3e2723 !important;
+}
+
+.recipe-card h3 {
+  color: #3e2723 !important;
+  font-family: var(--font-hand) !important;
+}
+
+.state-badge-small {
+  background-color: #8d6e63 !important;
+  color: #fff !important;
+}
+
+.recipe-specs li strong {
+  color: #5d4037 !important;
+}
+
+.glossary-section {
+  background-color: rgba(93, 64, 55, 0.05) !important;
+  border: 2px solid #8d6e63 !important;
+}
+
+.glossary-section h3 {
+  color: #3e2723 !important;
+  font-family: var(--font-hand) !important;
+}
+
+.glossary-grid {
+  color: #5d4037 !important;
+}
+
+/* --- ADAPTACIONES RESPONSIVAS --- */
+@media (max-width: 1024px) {
+  .kitchen-countertop {
+    grid-template-columns: 1fr;
+    height: auto;
+    overflow-y: auto;
+  }
+  
+  #game-container {
+    height: auto;
+    min-height: 98vh;
+    overflow-y: auto;
+  }
+}
+
+/* ANIMACIÓN DE SERVIR PLATO (DESLIZAMIENTO HACIA ARRIBA) */
+.serve-slide-up {
+  animation: slide-serve-up 0.7s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards !important;
+}
+
+@keyframes slide-serve-up {
+  0% { transform: translateY(0) scale(1); opacity: 1; }
+  30% { transform: translateY(15px) scale(1.02); opacity: 1; }
+  100% { transform: translateY(-450px) scale(0.6); opacity: 0; }
+}
+
+/* Animación de Disgusto del Cliente */
+.shake-angry {
+  animation: shake-anim 0.5s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake-anim {
+  10%, 90% { transform: translate3d(-2px, 0, 0); }
+  20%, 80% { transform: translate3d(4px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-6px, 0, 0); }
+  40%, 60% { transform: translate3d(6px, 0, 0); }
+}
+
+.hidden {
+  display: none !important;
+}
+
+/* --- TICKET DE COCINA --- */
+.kitchen-ticket {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  width: 220px;
+  background-color: #fdf6e3;
+  color: #333;
+  padding: 15px 15px 25px 15px;
+  box-shadow: 2px 5px 10px rgba(0,0,0,0.3);
+  transform: rotate(2deg);
+  z-index: 50;
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: 600;
+  font-size: 0.9rem;
+  /* Borde de ticket cortado */
+  background-image: linear-gradient(to right, transparent 50%, #fdf6e3 50%), linear-gradient(to right, transparent 50%, #fdf6e3 50%);
+  border-bottom: 2px dashed #ccc;
+  animation: ticket-slide-in 0.5s ease-out forwards;
+}
+
+.ticket-pin {
+  position: absolute;
+  top: -10px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 1.5rem;
+  z-index: 51;
+}
+
+.ticket-header {
+  text-align: center;
+  border-bottom: 2px solid #333;
+  padding-bottom: 5px;
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.ticket-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.ticket-list li {
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: space-between;
+}
+
+@keyframes ticket-slide-in {
+  from { top: -200px; opacity: 0; transform: rotate(-10deg); }
+  to { top: 10px; opacity: 1; transform: rotate(2deg); }
+}

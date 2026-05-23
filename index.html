@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>El Comal del Norte: ¡Buena Masa, Buen Burrito!</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Permanent+Marker&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=11">
+</head>
+<body>
+  <!-- Contenedor Principal del Juego -->
+  <div id="game-container" class="game-theme">
+    
+    <!-- PANTALLA DE INICIO (SPLASH) -->
+    <div id="screen-splash" class="screen active">
+      <div class="desert-background">
+        <div class="sun"></div>
+        <div class="mountains"></div>
+        <div class="cacti">
+          <div class="cactus c1"></div>
+          <div class="cactus c2"></div>
+        </div>
+      </div>
+      <div class="splash-content animate-fade-in">
+        <div class="badge">NIVEL NORTEÑO 🌵</div>
+        <h1 class="game-title">El Comal <br><span>del Norte</span></h1>
+        <p class="game-subtitle">¡Buena Masa, Buen Burrito!</p>
+        
+        <div class="action-buttons">
+          <button id="btn-start-game" class="btn primary-btn pulse-anim">Iniciar Jornada</button>
+          <button id="btn-open-recetario-splash" class="btn secondary-btn">📖 Recetario</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANTALLA DEL JUEGO (JUGABILIDAD INTERACTIVA) -->
+    <div id="screen-game" class="screen">
+      
+      <!-- HUD / Letrero de Madera Colgante -->
+      <header id="game-header" class="wooden-board">
+        <div class="hud-item day-counter">
+          <span class="label">Jornada</span>
+          <span class="value" id="hud-day">1</span>
+        </div>
+        <div class="hud-item state-badge" id="hud-region">
+          🌮 Puesto de Tacos & Burritos 🌯
+        </div>
+        <div class="hud-item wallet">
+          <span class="label">Caja</span>
+          <span class="value" id="hud-money">$100.00</span>
+        </div>
+        <button id="btn-open-recetario-game" class="clipboard-btn">
+          📋 Recetario
+        </button>
+      </header>
+
+      <!-- Escenario del Cliente (Detrás de la Barra) -->
+      <section id="customer-section" class="counter-top-bg">
+        <div class="window-frame"></div>
+        <div class="customer-avatar-box" id="customer-avatar-container">
+          <!-- El avatar se genera con animaciones de entrada -->
+          <div id="customer-avatar"></div>
+        </div>
+        
+        <!-- Pizarrón / Burbuja de diálogo del Norte -->
+        <div class="dialog-board chalkboard">
+          <div class="customer-state-tag" id="customer-state-origin">Procedencia: Sonora</div>
+          <p id="customer-dialog">"¡Qué onda pariente! Prepárame un buen taco de carne asada estilo Hermosillo."</p>
+          
+          <!-- Paciencia estilo Chile Picante -->
+          <div class="chili-patience-container">
+            <span class="chili-icon">🌶️</span>
+            <div class="chili-bar-bg">
+              <div id="patience-bar" class="chili-bar-fill" style="width: 100%;"></div>
+            </div>
+            <span class="chili-heat" id="patience-pct">100%</span>
+          </div>
+        </div>
+
+        <!-- Ticket de Cocina Flotante -->
+        <div id="kitchen-ticket" class="kitchen-ticket hidden">
+          <div class="ticket-pin">📌</div>
+          <div class="ticket-header">Comanda</div>
+          <ul id="ticket-list" class="ticket-list">
+            <!-- Rellenado por JS -->
+          </ul>
+        </div>
+      </section>
+
+      <!-- TABLERO DE COCINA (TABLADO DE MADERA) -->
+      <main id="kitchen-dashboard" class="kitchen-countertop">
+        
+        <!-- Columna Izquierda: Canasta de Tortillas y Frascos de Salsas/Untables -->
+        <section class="counter-column col-left">
+          <div class="wood-shelf">
+            <h4>Canasta de Masa</h4>
+            <div class="tortilla-basket">
+              <div class="tortilla-basket-item" data-action="tortilla" data-type="harina-grande" title="Tortilla de Harina Grande (Burrito)">
+                <div class="basket-stack stack-harina-g"></div>
+                <span class="item-tag">Harina G. <br><small>-$3.00</small></span>
+              </div>
+              <div class="tortilla-basket-item" data-action="tortilla" data-type="harina-chica" title="Tortilla de Harina Chica (Taco)">
+                <div class="basket-stack stack-harina-c"></div>
+                <span class="item-tag">Harina Ch. <br><small>-$2.00</small></span>
+              </div>
+              <div class="tortilla-basket-item" data-action="tortilla" data-type="maiz" title="Tortilla de Maíz (Taco Ensenada)">
+                <div class="basket-stack stack-maiz"></div>
+                <span class="item-tag">Maíz <br><small>-$1.50</small></span>
+              </div>
+            </div>
+          </div>
+
+          <div class="wood-shelf bases-shelf">
+            <h4>Untables & Frascos</h4>
+            <div class="jars-grid">
+              <button class="jar-item ingredient-btn" data-action="spread" data-type="frijoles" id="btn-frijoles" disabled title="Frijoles Refritos">
+                <div class="jar-visual jar-beans"></div>
+                <span class="jar-tag">Frijoles <br><small>-$1.00</small></span>
+              </button>
+              <button class="jar-item ingredient-btn" data-action="spread" data-type="guacamole" id="btn-guacamole" disabled title="Guacamole Fresco">
+                <div class="jar-visual jar-guac"></div>
+                <span class="jar-tag">Guacamole <br><small>-$2.00</small></span>
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- Columna Central: Tabla de Cortar e Hilera del Comal (Zona de Acción Principal) -->
+        <section class="counter-column col-center">
+          
+          <!-- Tabla de Cortar Madera -->
+          <div class="cutting-board-zone">
+            <div class="cutting-board-header">
+              <span class="board-title">Tabla de Armado</span>
+              <button id="btn-trash" class="action-btn btn-trash-game" title="Tirar y empezar de nuevo">🗑️ Desechar</button>
+            </div>
+            
+            <div class="canvas-wrapper-game">
+              <div id="tortilla-canvas" class="tortilla-empty">
+                <div class="tortilla-disc" id="visual-tortilla"></div>
+                <div class="spread-layer" id="visual-spread"></div>
+                <div class="toppings-container" id="visual-toppings"></div>
+                
+                <!-- Doblado superpuesto -->
+                <div class="folded-visual" id="visual-folded"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estación del Comal de Hierro Fundido -->
+          <div class="comal-zone-game">
+            <div class="comal-metal-grill">
+              <div class="smoke-particles" id="smoke-container"></div>
+              <div class="comal-flame-glow"></div>
+              <div class="comal-skillet" id="comal-skillet-area">
+                <!-- Huevo/Sizzling spots visuales -->
+                <div class="sizzle-spark s1"></div>
+                <div class="sizzle-spark s2"></div>
+                <div id="comal-item" class="hidden"></div>
+              </div>
+            </div>
+            
+            <div class="comal-dashboard-controls">
+              <button id="btn-cook" class="spatula-btn" disabled>
+                🍳 Cocinar en Comal
+              </button>
+              <div class="gauge-container">
+                <span class="gauge-status" id="cook-status-text">Frío</span>
+                <div class="cook-bar-gauge">
+                  <div id="cook-progress" class="cook-bar-fill" style="width: 0%;"></div>
+                  <!-- Marcadores del punto perfecto -->
+                  <div class="gauge-marker perfect-zone" style="left: 55%; width: 30%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Columna Derecha: Cazuelas de Barro con Guisos y Toppings -->
+        <section class="counter-column col-right">
+          <div class="clay-pots-shelf">
+            <h4>Guisados del Norte</h4>
+            <div class="bowls-grid">
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="asada" disabled title="Carne Asada de Sonora">
+                <div class="bowl-interior bowl-asada"></div>
+                <span class="bowl-tag">Asada <small>-$4</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="discada" disabled title="Discada de Durango/Coahuila">
+                <div class="bowl-interior bowl-discada"></div>
+                <span class="bowl-tag">Discada <small>-$4.5</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="machaca" disabled title="Machaca con Huevo de Chihuahua">
+                <div class="bowl-interior bowl-machaca"></div>
+                <span class="bowl-tag">Machaca <small>-$3.5</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="pescado" disabled title="Pescado Capeado Ensenada">
+                <div class="bowl-interior bowl-fish"></div>
+                <span class="bowl-tag">Pescado <small>-$3.5</small></span>
+              </button>
+            </div>
+
+            <h4>Verduras, Queso & Salsas</h4>
+            <div class="bowls-grid toppings-grid">
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="queso" disabled title="Queso Menonita">
+                <div class="bowl-interior bowl-cheese"></div>
+                <span class="bowl-tag">Queso <small>-$2</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="cebolla-cilantro" disabled title="Cebolla y Cilantro">
+                <div class="bowl-interior bowl-cilantro"></div>
+                <span class="bowl-tag">Cebolla/Cil. <small>-$1</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="repollo" disabled title="Repollo Picado">
+                <div class="bowl-interior bowl-cabbage"></div>
+                <span class="bowl-tag">Repollo <small>-$1</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="rajas" disabled title="Rajas de Chilaca">
+                <div class="bowl-interior bowl-rajas"></div>
+                <span class="bowl-tag">Rajas <small>-$1.5</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="salsa-roja" disabled title="Salsa Roja Picante">
+                <div class="bowl-interior bowl-salsa-roja"></div>
+                <span class="bowl-tag">S. Roja <small>-$0.5</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="salsa-verde" disabled title="Salsa Verde de Tomatillo">
+                <div class="bowl-interior bowl-salsa-verde"></div>
+                <span class="bowl-tag">S. Verde <small>-$0.5</small></span>
+              </button>
+              <button class="bowl-pot ingredient-btn" data-action="topping" data-type="limon" disabled title="Limón Exprimidito">
+                <div class="bowl-interior bowl-lime"></div>
+                <span class="bowl-tag">Limón <small>-$0.5</small></span>
+              </button>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <!-- BARRA DE ACCIÓN INFERIOR (Herramientas y Entrega) -->
+      <footer id="action-deck" class="wooden-deck">
+        <div class="deck-section tools-section">
+          <span class="deck-label">Doblado:</span>
+          <button id="btn-fold-taco" class="tool-btn fold-btn-taco" disabled>
+            🌮 Taco
+          </button>
+          <button id="btn-fold-burrito" class="tool-btn fold-btn-burrito" disabled>
+            🌯 Burrito
+          </button>
+        </div>
+
+        <div class="deck-section tools-section">
+          <span class="deck-label">Corte:</span>
+          <button id="btn-cut-half" class="tool-btn cut-btn" disabled>
+            🔪 Cortar Burrito
+          </button>
+        </div>
+
+        <div class="deck-section deliver-section">
+          <button id="btn-deliver" class="tray-btn" disabled>
+            🍽️ ¡Servir al Cliente! 🍽️
+          </button>
+        </div>
+      </footer>
+    </div>
+
+    <!-- PANTALLA FIN DE JORNADA (RESULTADOS) -->
+    <div id="screen-summary" class="screen">
+      <div class="summary-container wooden-box-summary">
+        <h2 class="summary-title text-stamp">Balance del Día</h2>
+        <p class="summary-subtitle">¡Buen trabajo, pariente!</p>
+        
+        <div class="sheet-summary chalkboard">
+          <div class="summary-row">
+            <span>Ventas del día:</span>
+            <span class="value positive" id="sum-sales">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Propinas ganadas:</span>
+            <span class="value positive" id="sum-tips">$0.00</span>
+          </div>
+          <div class="summary-row">
+            <span>Costo de ingredientes:</span>
+            <span class="value negative" id="sum-costs">-$0.00</span>
+          </div>
+          <hr>
+          <div class="summary-row total-row">
+            <span>Ganancia Neta:</span>
+            <span class="value" id="sum-net">$0.00</span>
+          </div>
+        </div>
+
+        <div id="summary-evaluation" class="summary-eval-text chalk-text">
+          "¡Hiciste felices a los clientes norteños!"
+        </div>
+
+        <div class="action-buttons">
+          <button id="btn-restart-day" class="btn primary-btn pulse-anim">Siguiente Día</button>
+          <button id="btn-go-splash" class="btn secondary-btn">Volver al Menú</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- VENTANA MODAL: RECETARIO DEL NORTE -->
+    <div id="modal-recetario" class="modal">
+      <div class="modal-content clipboard-modal">
+        <header class="modal-header">
+          <h2>Menú y Recetario Norteño 📋</h2>
+          <button id="btn-close-recetario" class="btn-close">&times;</button>
+        </header>
+        
+        <div class="modal-body">
+          <div class="recetario-grid">
+            
+            <!-- Receta 1: Sonora -->
+            <div class="recipe-card state-sonora">
+              <div class="recipe-card-header">
+                <h3>Taco de Carne Asada</h3>
+                <span class="state-badge-small">Sonora 🌵</span>
+              </div>
+              <img src="taco_asada_1779538963899.png" alt="Taco de Carne Asada" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
+              <p class="recipe-desc">El clásico de clásicos de las parrilladas sonorenses.</p>
+              <ul class="recipe-specs">
+                <li><strong>Tortilla:</strong> Harina Chica</li>
+                <li><strong>Base:</strong> Guacamole 🟢</li>
+                <li><strong>Proteína:</strong> Carne Asada 🥩</li>
+                <li><strong>Extras:</strong> Cebolla y Cilantro 🌿</li>
+                <li><strong>Doblado:</strong> Taco 🌮</li>
+              </ul>
+              <div class="recipe-tip">💡 "Al sonorense le gusta la carne con cebollita y cilantro, ¡pariente!"</div>
+            </div>
+
+            <!-- Receta 2: Chihuahua -->
+            <div class="recipe-card state-chihuahua">
+              <div class="recipe-card-header">
+                <h3>Burrito de Machaca</h3>
+                <span class="state-badge-small">Chihuahua 🏔️</span>
+              </div>
+              <img src="burrito_machaca_1779538976949.png" alt="Burrito de Machaca" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
+              <p class="recipe-desc">Carne de res deshidratada guisada con huevo y verduras.</p>
+              <ul class="recipe-specs">
+                <li><strong>Tortilla:</strong> Harina Grande</li>
+                <li><strong>Base:</strong> Ninguna</li>
+                <li><strong>Proteína:</strong> Machaca con Huevo 🥚</li>
+                <li><strong>Extras:</strong> Rajas de Chilaca 🌶️, Queso Menonita 🧀</li>
+                <li><strong>Doblado:</strong> Burrito 🌯</li>
+              </ul>
+              <div class="recipe-tip">💡 "Un burrito clásico del estado grande lleva queso y rajas de chilaca."</div>
+            </div>
+
+            <!-- Receta 3: Coahuila y Durango -->
+            <div class="recipe-card state-durango">
+              <div class="recipe-card-header">
+                <h3>Burrito de Discada</h3>
+                <span class="state-badge-small">Coahuila & Durango 🍳</span>
+              </div>
+              <img src="burrito_discada_1779538989185.png" alt="Burrito de Discada" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
+              <p class="recipe-desc">Mezcla tradicional de carnes y embutidos cocinados en disco de arado.</p>
+              <ul class="recipe-specs">
+                <li><strong>Tortilla:</strong> Harina Grande</li>
+                <li><strong>Base:</strong> Frijoles Refritos 🟤</li>
+                <li><strong>Proteína:</strong> Discada Norteña 🍳</li>
+                <li><strong>Extras:</strong> Queso Menonita 🧀</li>
+                <li><strong>Doblado:</strong> Burrito 🌯</li>
+                <li><strong>Servido:</strong> Cortado a la mitad 🔪</li>
+              </ul>
+              <div class="recipe-tip">💡 "La discada sabe mejor con frijolitos y queso derretido. ¡Y partido a la mitad!"</div>
+            </div>
+
+            <!-- Receta 4: Baja California -->
+            <div class="recipe-card state-baja">
+              <div class="recipe-card-header">
+                <h3>Taco de Pescado Ensenada</h3>
+                <span class="state-badge-small">Baja California 🌊</span>
+              </div>
+              <img src="taco_pescado_1779539001401.png" alt="Taco de Pescado" style="width: 100%; max-height: 150px; object-fit: cover; border-radius: 12px; margin-top: 10px; margin-bottom: 10px; border: 2px solid #8d6e63;">
+              <p class="recipe-desc">Pescado frito en tempura capeado al estilo de Ensenada.</p>
+              <ul class="recipe-specs">
+                <li><strong>Tortilla:</strong> Maíz 🌽</li>
+                <li><strong>Base:</strong> Ninguna</li>
+                <li><strong>Proteína:</strong> Pescado Capeado 🐟</li>
+                <li><strong>Extras:</strong> Repollo Picado 🥬</li>
+                <li><strong>Salsa:</strong> Salsa Verde 🟢, Limón 🍋</li>
+                <li><strong>Doblado:</strong> Taco 🌮</li>
+              </ul>
+              <div class="recipe-tip">💡 "¡El taco de pescado ensenadense siempre lleva col (repollo) fresca y limón!"</div>
+            </div>
+
+          </div>
+
+          <!-- Glosario de Jerga Norteña -->
+          <div class="glossary-section">
+            <h3>Glosario de Jerga del Norte 💬</h3>
+            <div class="glossary-grid">
+              <div><strong>"Pariente" / "Plebe":</strong> Compadre, amigo (Sonora/Sinaloa).</div>
+              <div><strong>"Bien reportado":</strong> Muy lleno, abundante de ingredientes.</div>
+              <div><strong>"De volada" / "Ahorita":</strong> Muy rápido, de inmediato.</div>
+              <div><strong>"Chilo" / "Chilón":</strong> Chido, genial (Baja California/Sonora).</div>
+              <div><strong>"Fierro por la 300":</strong> Expresión sonorense para apurarse o darle con todo.</div>
+              <div><strong>"Asuuu":</strong> Exclamación de asombro común en Coahuila y Durango.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Scripts -->
+  <script src="sound.js?v=11"></script>
+  <script src="game.js?v=11"></script>
+</body>
+</html>
