@@ -62,7 +62,7 @@ body {
 /* CONTENEDOR DEL JUEGO */
 #game-container {
   width: 1150px;
-  height: 850px;
+  height: 1000px;
   flex-shrink: 0;
   transform-origin: top left;
   background: #3e2723; /* Madera base */
@@ -773,9 +773,12 @@ body {
 
 /* --- COLUMNA CENTRAL: TABLA Y COMAL --- */
 .cutting-board-zone {
-  background: #d7ccc8; /* Madera de cortar clara */
-  border: 6px solid #a1887f;
-  border-radius: 20px;
+  background: #a17b5f; /* Base madera cálida */
+  background-image: 
+    repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(0,0,0,0.05) 40px, rgba(0,0,0,0.05) 80px),
+    linear-gradient(0deg, rgba(139,69,19,0.1) 0%, transparent 100%);
+  border: 8px solid #5d4037;
+  border-radius: 12px;
   padding: 10px;
   flex: 1.1;
   display: flex;
@@ -819,8 +822,14 @@ body {
 #tortilla-canvas {
   width: 200px;
   height: 200px;
-  background-color: rgba(255,255,255,0.2);
-  border: 4px dashed rgba(0,0,0,0.15);
+  background-color: rgba(234, 225, 212, 0.35); /* Textura de harina translúcida */
+  background-image: 
+    linear-gradient(rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0.6)),
+    url('tex_tortilla_harina.png');
+  background-size: cover;
+  background-position: center;
+  background-blend-mode: lighten;
+  border: 4px dashed rgba(62, 39, 35, 0.3);
   border-radius: 50%;
   position: relative;
   display: flex;
@@ -831,7 +840,8 @@ body {
 
 .tortilla-empty::after {
   content: 'Toca una tortilla de la canasta 🧺';
-  color: #5d4037;
+  color: #fff;
+  text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
   font-weight: 800;
   font-size: 0.85rem;
   text-align: center;
@@ -844,6 +854,9 @@ body {
   box-shadow: 0 4px 10px rgba(0,0,0,0.15);
   transition: all 0.3s ease;
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   z-index: 1;
 }
 
@@ -851,10 +864,9 @@ body {
   width: 180px;
   height: 180px;
   background-color: var(--tortilla-harina);
-  background-image: 
-    radial-gradient(circle at 30% 25%, rgba(139, 90, 43, 0.18) 12px, transparent 15px),
-    radial-gradient(circle at 75% 65%, rgba(139, 90, 43, 0.12) 8px, transparent 10px),
-    radial-gradient(circle at 60% 30%, rgba(139, 90, 43, 0.15) 15px, transparent 18px);
+  background-image: url('tex_tortilla_harina.png');
+  background-size: cover;
+  background-position: center;
   border: 2px solid #dfd5c6;
 }
 
@@ -862,9 +874,9 @@ body {
   width: 135px;
   height: 135px;
   background-color: var(--tortilla-harina);
-  background-image: 
-    radial-gradient(circle at 40% 45%, rgba(139, 90, 43, 0.12) 8px, transparent 10px),
-    radial-gradient(circle at 70% 35%, rgba(139, 90, 43, 0.15) 10px, transparent 12px);
+  background-image: url('tex_tortilla_harina.png');
+  background-size: cover;
+  background-position: center;
   border: 2px solid #dfd5c6;
 }
 
@@ -881,6 +893,9 @@ body {
 /* Capas Untadas */
 .spread-layer {
   position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   border-radius: 50%;
   z-index: 2;
   pointer-events: none;
@@ -901,6 +916,8 @@ body {
 /* Toppings e Ingredientes Visuales */
 .toppings-container {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   z-index: 3;
@@ -920,7 +937,7 @@ body {
   }
   to {
     transform: translate(-50%, -50%) scale(1);
-    opacity: 1;
+    opacity: var(--final-opacity, 1);
   }
 }
 
@@ -933,7 +950,7 @@ body {
   background-position: center;
   border-radius: 50%;
   mix-blend-mode: multiply;
-  transform: rotate(var(--rot));
+  transform: translate(-50%, -50%) rotate(var(--rot));
 }
 
 .t-pescado {
@@ -944,7 +961,7 @@ body {
   border-radius: 10px;
   mix-blend-mode: multiply;
   filter: sepia(0.8) hue-rotate(30deg) brightness(1.2); /* Tono frito dorado */
-  transform: rotate(var(--rot));
+  transform: translate(-50%, -50%) rotate(var(--rot));
 }
 
 .t-queso {
@@ -955,7 +972,7 @@ body {
   background-position: center;
   border-radius: 50%;
   mix-blend-mode: multiply;
-  transform: rotate(var(--rot));
+  transform: translate(-50%, -50%) rotate(var(--rot));
 }
 
 .t-cebolla-cilantro, .t-repollo, .t-rajas {
@@ -966,7 +983,7 @@ body {
   background-position: center;
   border-radius: 50%;
   mix-blend-mode: multiply;
-  transform: rotate(var(--rot));
+  transform: translate(-50%, -50%) rotate(var(--rot));
 }
 
 .t-salsa-roja {
@@ -976,7 +993,7 @@ body {
   background-size: cover;
   border-radius: 50%;
   mix-blend-mode: multiply;
-  transform: rotate(var(--rot));
+  transform: translate(-50%, -50%) rotate(var(--rot));
 }
 
 .t-salsa-verde, .t-limon {
@@ -986,8 +1003,8 @@ body {
   background-size: cover;
   border-radius: 50%;
   mix-blend-mode: multiply;
-  filter: hue-rotate(100deg); /* Verde/Limon */
-  transform: rotate(var(--rot));
+  filter: hue-rotate(100deg);
+  transform: translate(-50%, -50%) rotate(var(--rot));
 }
 
 /* Efectos de Doblado Visual en la tabla */
@@ -1026,12 +1043,18 @@ body {
 
 .cut-line {
   position: absolute;
-  width: 100%;
-  height: 2px;
+  width: 2px;
+  height: 100%;
   background-color: rgba(231, 76, 60, 0.85);
   box-shadow: 0 0 8px #e74c3c;
   z-index: 10;
-  animation: slash-cut 0.3s ease-out;
+  animation: slash-cut-vertical 0.3s ease-out forwards;
+}
+
+.cut-line.horizontal {
+  width: 100%;
+  height: 2px;
+  animation: slash-cut-horizontal 0.3s ease-out forwards;
 }
 
 /* Elemento cocinando en el comal */
@@ -1198,9 +1221,14 @@ body {
   100% { transform: translateY(-40px) scale(1.6); opacity: 0; }
 }
 
-@keyframes slash-cut {
+@keyframes slash-cut-horizontal {
   0% { transform: scaleX(0); }
   100% { transform: scaleX(1); }
+}
+
+@keyframes slash-cut-vertical {
+  0% { transform: scaleY(0); }
+  100% { transform: scaleY(1); }
 }
 
 @keyframes fold-down {

@@ -242,7 +242,7 @@ function setupResizeHandler() {
     
     // Dimensiones originales base
     const targetW = 1150;
-    const targetH = 850;
+    const targetH = 1000;
     
     // Dimensiones disponibles en la ventana (con margen)
     const windowW = window.innerWidth - 20;
@@ -1137,6 +1137,9 @@ function cutMeal() {
   const canvas = document.getElementById('tortilla-canvas');
   const cutLine = document.createElement('div');
   cutLine.className = 'cut-line';
+  if (state.currentOrder.foldedType === 'burrito') {
+    cutLine.classList.add('horizontal');
+  }
   canvas.appendChild(cutLine);
   
   setTimeout(() => cutLine.remove(), 400);
