@@ -884,9 +884,9 @@ body {
   width: 130px;
   height: 130px;
   background-color: var(--tortilla-maiz);
-  background-image: 
-    radial-gradient(circle at 35% 35%, rgba(197, 137, 18, 0.22) 6px, transparent 8px),
-    radial-gradient(circle at 65% 60%, rgba(197, 137, 18, 0.18) 12px, transparent 14px);
+  background-image: url('tex_tortilla_maiz.png');
+  background-size: cover;
+  background-position: center;
   border: 2px solid #e1b12c;
 }
 
