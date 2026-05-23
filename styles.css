@@ -51,13 +51,20 @@ body {
   padding: 20px 10px;
 }
 
+/* WRAPPER PARA ESCALADO PERFECTO */
+#game-wrapper {
+  margin: auto;
+  position: relative;
+  overflow: hidden;
+  /* El ancho y alto serán ajustados dinámicamente por JS */
+}
+
 /* CONTENEDOR DEL JUEGO */
 #game-container {
-  width: 100%;
-  max-width: 1150px;
-  height: 92vh;
-  min-height: 680px;
-  margin: auto; /* Centra verticalmente cuando hay espacio de sobra */
+  width: 1150px;
+  height: 850px;
+  flex-shrink: 0;
+  transform-origin: top left;
   background: #3e2723; /* Madera base */
   /* Textura de tablones de madera usando gradiente CSS */
   background-image: 
@@ -1682,19 +1689,7 @@ body {
 }
 
 /* --- ADAPTACIONES RESPONSIVAS --- */
-@media (max-width: 1024px) {
-  .kitchen-countertop {
-    grid-template-columns: 1fr;
-    height: auto;
-    overflow-y: auto;
-  }
-  
-  #game-container {
-    height: auto;
-    min-height: 98vh;
-    overflow-y: auto;
-  }
-}
+/* Media query was safely removed to allow JS scaling to work correctly */
 
 /* ANIMACIÓN DE SERVIR PLATO (DESLIZAMIENTO HACIA ARRIBA) */
 .serve-slide-up {

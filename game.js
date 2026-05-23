@@ -224,7 +224,49 @@ document.addEventListener('DOMContentLoaded', () => {
   setupModalEvents();
   setupSummaryEvents();
   setupFullscreen();
+  setupResizeHandler();
 });
+
+function getGameScale() {
+  const container = document.getElementById('game-container');
+  if (!container || !container.style.transform) return 1;
+  const match = container.style.transform.match(/scale\(([^)]+)\)/);
+  return match ? parseFloat(match[1]) : 1;
+}
+
+function setupResizeHandler() {
+  function resize() {
+    const container = document.getElementById('game-container');
+    const wrapper = document.getElementById('game-wrapper');
+    if (!container || !wrapper) return;
+    
+    // Dimensiones originales base
+    const targetW = 1150;
+    const targetH = 850;
+    
+    // Dimensiones disponibles en la ventana (con margen)
+    const windowW = window.innerWidth - 20;
+    const windowH = window.innerHeight - 30;
+    
+    // Factor de escala (mantener proporción)
+    const scaleW = windowW / targetW;
+    const scaleH = windowH / targetH;
+    let scale = Math.min(scaleW, scaleH);
+    
+    // Limitar crecimiento excesivo
+    if (scale > 1.2) scale = 1.2;
+    
+    container.style.transform = `scale(${scale})`;
+    container.style.transformOrigin = 'top left';
+    
+    // Ajustar el contenedor exterior para que no genere scrollbars innecesarios
+    wrapper.style.width = `${targetW * scale}px`;
+    wrapper.style.height = `${targetH * scale}px`;
+  }
+  
+  window.addEventListener('resize', resize);
+  resize(); // Aplicar de inmediato
+}
 
 function setupFullscreen() {
   const btnFullscreen = document.getElementById('btn-global-fullscreen');
@@ -677,6 +719,19 @@ function setupKitchenEvents() {
       activeDragItem.style.pointerEvents = 'none';
       activeDragItem.style.left = `${e.clientX}px`;
       activeDragItem.style.top = `${e.clientY}px`;
+
+      // Hacer que el ingrediente arrastrado también se vea del tamaño de la tortilla
+      const t = state.currentOrder.tortilla;
+      const dynSize = t === 'harina-grande' ? 160 : (t === 'harina-chica' ? 115 : 105);
+      activeDragItem.style.width = `${dynSize}px`;
+      activeDragItem.style.height = `${dynSize}px`;
+
+      const currentScale = getGameScale();
+      if (currentScale !== 1) {
+        activeDragItem.style.transform = `translate(-50%, -50%) scale(${currentScale})`;
+      } else {
+        activeDragItem.style.transform = `translate(-50%, -50%)`;
+      }
       document.body.appendChild(activeDragItem);
       
       btn.setPointerCapture(e.pointerId);
@@ -710,9 +765,10 @@ function setupKitchenEvents() {
       
       const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
       
-      let radius = 75; 
-      if (state.currentOrder.tortilla === 'harina-chica') radius = 55;
-      else if (state.currentOrder.tortilla === 'maiz') radius = 50;
+      const scale = getGameScale();
+      let radius = 75 * scale; 
+      if (state.currentOrder.tortilla === 'harina-chica') radius = 55 * scale;
+      else if (state.currentOrder.tortilla === 'maiz') radius = 50 * scale;
       
       if (distance <= radius && !state.isCooking) {
         state.currentOrder.toppings.push(dragType);
@@ -732,7 +788,8 @@ function setupKitchenEvents() {
           checkOffTicketItem('oi-extra-' + dragType);
         }
 
-        spawnSingleTopping(dragType, offsetX, offsetY);
+        // Pasamos el offset sin escala para que al renderizarse en el canvas se vea bien
+        spawnSingleTopping(dragType, offsetX / scale, offsetY / scale);
       }
       dragType = null;
     });
@@ -800,18 +857,18 @@ function setupKitchenEvents() {
     
     isDraggingCanvas = true;
     
-    canvasClone = document.createElement('div');
-    canvasClone.className = 'tortilla-empty'; // para heredar bordes redondos
-    canvasClone.style.width = '150px';
-    canvasClone.style.height = '150px';
-    canvasClone.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
-    canvasClone.style.border = '2px dashed #000';
+    // Crear clon visual idéntico de toda la tortilla (con toppings) en lugar de un cuadro
+    canvasClone = canvas.cloneNode(true);
+    canvasClone.id = 'canvas-drag-clone';
     canvasClone.style.position = 'fixed';
     canvasClone.style.zIndex = '9999';
     canvasClone.style.pointerEvents = 'none';
+    canvasClone.style.margin = '0'; // Quitar posibles márgenes flex
+    
     canvasClone.style.left = `${e.clientX}px`;
     canvasClone.style.top = `${e.clientY}px`;
-    canvasClone.style.transform = 'translate(-50%, -50%)';
+    const cScale = getGameScale();
+    canvasClone.style.transform = `translate(-50%, -50%) scale(${cScale})`;
     document.body.appendChild(canvasClone);
     
     canvas.setPointerCapture(e.pointerId);
@@ -867,8 +924,29 @@ function spawnSingleTopping(type, offsetX, offsetY) {
   
   const chunk = document.createElement('div');
   chunk.className = `visual-chunk t-${type}`;
-  chunk.style.left = `calc(50% + ${offsetX}px)`;
-  chunk.style.top = `calc(50% + ${offsetY}px)`;
+  
+  // Centrado automático, ignorando la posición del cursor (offsetX, offsetY)
+  chunk.style.left = '50%';
+  chunk.style.top = '50%';
+  
+  // Tamaño dinámico para llegar casi al borde de la tortilla elegida
+  const t = state.currentOrder.tortilla;
+  const dynSize = t === 'harina-grande' ? 160 : (t === 'harina-chica' ? 115 : 105);
+  chunk.style.width = `${dynSize}px`;
+  chunk.style.height = `${dynSize}px`;
+  
+  // Bajar la transparencia de las capas de ingredientes anteriores
+  const existingChunks = container.querySelectorAll('.visual-chunk');
+  existingChunks.forEach(c => {
+    let currentOpacity = parseFloat(c.style.getPropertyValue('--final-opacity') || c.style.opacity || "1");
+    let newOpacity = Math.max(0.25, currentOpacity - 0.15); // baja 15% por cada ingrediente nuevo
+    c.style.setProperty('--final-opacity', newOpacity.toString());
+    c.style.opacity = newOpacity.toString();
+  });
+  
+  // El ingrediente nuevo se ve al 100% de opacidad
+  chunk.style.setProperty('--final-opacity', "1");
+  chunk.style.opacity = "1";
   
   chunk.style.setProperty('--rot', `${Math.random() * 360}deg`);
   
