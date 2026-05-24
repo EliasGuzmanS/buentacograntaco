@@ -11,15 +11,17 @@
   <link rel="stylesheet" href="styles.css?v=39">
 </head>
 <body>
-  <!-- Botón Global Fullscreen -->
-  <button id="btn-global-fullscreen" class="global-fullscreen-btn" title="Alternar Pantalla Completa">
-    ⛶ Pantalla Completa
-  </button>
-  
-  <!-- Botón Global Música -->
-  <button id="btn-global-music" class="global-music-btn" title="Alternar Música">
-    🎵 Música: ON
-  </button>
+  <!-- Controles Globales -->
+  <div style="position: fixed; top: 15px; right: 15px; z-index: 9999; display: flex; gap: 10px;">
+    <!-- Botón Global Música -->
+    <button id="btn-global-music" class="global-music-btn" title="Alternar Música">
+      🎵 ON
+    </button>
+    <!-- Botón Global Fullscreen -->
+    <button id="btn-global-fullscreen" class="global-fullscreen-btn" title="Alternar Pantalla Completa">
+      ⛶ Pantalla Completa
+    </button>
+  </div>
 
   <!-- Contenedor Principal del Juego -->
   <div id="game-wrapper">
@@ -98,13 +100,20 @@
             </ul>
           </div>
 
-          <!-- Paciencia estilo Hambre -->
-          <div class="chili-patience-container">
-            <span class="chili-icon" style="font-size:1.6rem;">🤤</span>
-            <div class="chili-bar-bg">
-              <div id="patience-bar" class="chili-bar-fill" style="width: 100%;"></div>
+          <!-- Contenedor Inferior: Paciencia e Instrucciones -->
+          <div style="display: flex; justify-content: flex-start; align-items: center; margin-top: 8px; gap: 20px;">
+            <!-- Paciencia estilo Hambre -->
+            <div class="chili-patience-container">
+              <span class="chili-icon" style="font-size:1.6rem;">🤤</span>
+              <div class="chili-bar-bg">
+                <div id="patience-bar" class="chili-bar-fill" style="width: 100%;"></div>
+              </div>
+              <span class="chili-heat" id="patience-pct">100%</span>
             </div>
-            <span class="chili-heat" id="patience-pct">100%</span>
+            
+            <!-- Instrucciones de Acción -->
+            <div id="action-instructions" style="display: flex; gap: 8px; align-items: center;">
+            </div>
           </div>
         </div>
       </section>

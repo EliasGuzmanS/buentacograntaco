@@ -307,7 +307,7 @@ function setupMusicToggle() {
     if (window.sound && window.sound.ctx) window.sound.playClick();
     if (window.music) {
       const isMuted = window.music.toggleMusic();
-      btnMusic.innerText = isMuted ? '🎵 Música: OFF' : '🎵 Música: ON';
+      btnMusic.innerText = isMuted ? '🎵 OFF' : '🎵 ON';
     }
   });
 }
@@ -445,12 +445,17 @@ function loadCustomer() {
 function updatePatienceBar() {
   const bar = document.getElementById('patience-bar');
   if (!bar) return;
-  bar.style.width = `${state.currentCustomer.patience}%`;
+  const pct = state.currentCustomer.patience;
+  bar.style.width = `${pct}%`;
+  
+  if (pct > 60) bar.style.backgroundColor = '#2ecc71';
+  else if (pct > 30) bar.style.backgroundColor = '#f1c40f';
+  else bar.style.backgroundColor = '#e74c3c';
   
   // Mostrar porcentaje en texto
   const pctLabel = document.getElementById('patience-pct');
   if (pctLabel) {
-    pctLabel.innerText = `${Math.max(0, Math.round(state.currentCustomer.patience))}%`;
+    pctLabel.innerText = `${Math.max(0, Math.round(pct))}%`;
   }
 }
 
@@ -595,9 +600,11 @@ const OI_LABEL = {
 function updateKitchenTicket(customer) {
   const checklistDiv = document.getElementById('order-checklist');
   const ticketList = document.getElementById('ticket-list');
+  const instructionsDiv = document.getElementById('action-instructions');
 
   if (!customer) {
     checklistDiv.classList.add('hidden');
+    instructionsDiv.innerHTML = '';
     return;
   }
 
@@ -606,13 +613,14 @@ function updateKitchenTicket(customer) {
 
   document.getElementById('checklist-num').innerText = state.customerIndex + 1;
   ticketList.innerHTML = '';
+  if (instructionsDiv) instructionsDiv.innerHTML = '';
 
   const getIconHtml = (key) => {
     if (OI_SPRITE[key]) {
       let extraStyle = '';
       if (key === 'pescado') extraStyle = 'filter: sepia(0.8) hue-rotate(30deg) brightness(1.2);';
       if (key === 'salsa-verde') extraStyle = 'filter: hue-rotate(140deg) saturate(1.5) brightness(0.9);';
-      return `<img src="${OI_SPRITE[key]}" class="oi-sprite-icon" style="width:24px; height:24px; border-radius:50%; object-fit:cover; flex-shrink:0; border: 1.5px solid #555; margin-right:4px; ${extraStyle}">`;
+      return `<img src="${OI_SPRITE[key]}" class="oi-sprite-icon" style="width:48px; height:48px; border-radius:50%; object-fit:cover; flex-shrink:0; border: 1.5px solid #555; margin-top:2px; ${extraStyle}">`;
     }
     return `<span class="oi-dot" style="background:${OI_COLOR[key] || '#888'}"></span><span class="oi-emoji">${OI_EMOJI[key] || '•'}</span>`;
   };
@@ -622,8 +630,8 @@ function updateKitchenTicket(customer) {
     li.className = 'oi-item' + (extraClass ? ' ' + extraClass : '');
     li.id = id;
     li.innerHTML =
+      `<span class="oi-label" style="margin-bottom: 2px;">${OI_LABEL[key] || key}</span>` +
       getIconHtml(key) +
-      `<span class="oi-label">${OI_LABEL[key] || key}</span>` +
       `<span class="oi-check">✓</span>`;
     ticketList.appendChild(li);
   };
@@ -639,38 +647,44 @@ function updateKitchenTicket(customer) {
   // Toppings requeridos (uno por fila)
   recipe.requiredToppings.forEach(top => addItem('oi-' + top, top));
 
-  // Doblez
-  const foldLi = document.createElement('li');
-  foldLi.className = 'oi-item oi-action-item';
-  foldLi.id = 'oi-fold';
-  const foldEmoji = recipe.fold === 'taco' ? '🌮' : '🌯';
-  const foldLabel = recipe.fold === 'taco' ? 'Doblar: Taco' : 'Doblar: Burrito';
-  foldLi.innerHTML =
-    `<span class="oi-dot" style="background:#f39c12"></span>` +
-    `<span class="oi-emoji">${foldEmoji}</span>` +
-    `<span class="oi-label">${foldLabel}</span>` +
-    `<span class="oi-check">✓</span>`;
-  ticketList.appendChild(foldLi);
-
-  // Corte
-  if (recipe.cut) {
-    const cutLi = document.createElement('li');
-    cutLi.className = 'oi-item oi-action-item';
-    cutLi.id = 'oi-cut';
-    cutLi.innerHTML =
-      `<span class="oi-dot" style="background:#95a5a6"></span>` +
-      `<span class="oi-emoji">🔪</span>` +
-      `<span class="oi-label">Cortar mitad</span>` +
+  // Doblez (Instrucciones)
+  if (instructionsDiv) {
+    const foldDiv = document.createElement('div');
+    foldDiv.className = 'oi-item oi-action-item full-width';
+    foldDiv.style.margin = '0';
+    foldDiv.style.padding = '4px 8px';
+    foldDiv.id = 'oi-fold';
+    const foldEmoji = recipe.fold === 'taco' ? '🌮' : '🌯';
+    const foldLabel = recipe.fold === 'taco' ? 'Taco' : 'Burrito';
+    foldDiv.innerHTML =
+      `<span class="oi-emoji">${foldEmoji}</span>` +
+      `<span class="oi-label">${foldLabel}</span>` +
       `<span class="oi-check">✓</span>`;
-    ticketList.appendChild(cutLi);
-  }
+    instructionsDiv.appendChild(foldDiv);
 
-  // Nota: sin verduras
-  if (customer.specialMods && customer.specialMods.noVeg) {
-    const modLi = document.createElement('li');
-    modLi.className = 'oi-item oi-noveg full-width';
-    modLi.innerHTML = `<span class="oi-emoji">🚫</span><span class="oi-label">¡SIN VERDURAS ni salsas!</span>`;
-    ticketList.appendChild(modLi);
+    // Corte
+    if (recipe.cut) {
+      const cutDiv = document.createElement('div');
+      cutDiv.className = 'oi-item oi-action-item full-width';
+      cutDiv.style.margin = '0';
+      cutDiv.style.padding = '4px 8px';
+      cutDiv.id = 'oi-cut';
+      cutDiv.innerHTML =
+        `<span class="oi-emoji">🔪</span>` +
+        `<span class="oi-label">Cortar</span>` +
+        `<span class="oi-check">✓</span>`;
+      instructionsDiv.appendChild(cutDiv);
+    }
+
+    // Nota: sin verduras
+    if (customer.specialMods && customer.specialMods.noVeg) {
+      const modDiv = document.createElement('div');
+      modDiv.className = 'oi-item oi-noveg full-width';
+      modDiv.style.margin = '0';
+      modDiv.style.padding = '4px 8px';
+      modDiv.innerHTML = `<span class="oi-emoji">🚫</span><span class="oi-label">¡SIN VERDURAS!</span>`;
+      instructionsDiv.appendChild(modDiv);
+    }
   }
 
   // Extras requeridos
@@ -680,8 +694,8 @@ function updateKitchenTicket(customer) {
       extraLi.className = 'oi-item oi-extra-item full-width';
       extraLi.id = 'oi-extra-' + extra;
       extraLi.innerHTML =
+        `<span class="oi-label" style="margin-bottom: 2px;">${OI_LABEL[extra] || extra} (extra)</span>` +
         getIconHtml(extra) +
-        `<span class="oi-label">${OI_LABEL[extra] || extra} (extra)</span>` +
         `<span class="oi-check">✓</span>`;
       ticketList.appendChild(extraLi);
     });
