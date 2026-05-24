@@ -383,6 +383,24 @@ function startDay() {
   loadCustomer();
 }
 
+// --- EFECTO MÁQUINA DE ESCRIBIR ---
+let typewriterInterval = null;
+function playTypewriter(elementId, text, speed = 25) {
+  const el = document.getElementById(elementId);
+  if (!el) return;
+  if (typewriterInterval) clearInterval(typewriterInterval);
+  el.textContent = '';
+  let i = 0;
+  typewriterInterval = setInterval(() => {
+    el.textContent += text.charAt(i);
+    i++;
+    if (i >= text.length) {
+      clearInterval(typewriterInterval);
+      typewriterInterval = null;
+    }
+  }, speed);
+}
+
 // --- CARGAR CLIENTE ---
 function loadCustomer() {
   const maxDay = Math.max(...Object.keys(DAY_SCHEDULE).map(Number));
@@ -412,7 +430,8 @@ function loadCustomer() {
 
   // Actualizar UI del cliente
   document.getElementById('customer-state-origin').innerText = `${state.currentCustomer.name} — ${state.currentCustomer.state}`;
-  document.getElementById('customer-dialog').innerText = `"${state.currentCustomer.shortDialog || state.currentCustomer.dialog}"`;
+  const orderText = `"${state.currentCustomer.shortDialog || state.currentCustomer.dialog}"`;
+  playTypewriter('customer-dialog', orderText, 25);
   
   // Dibujar Avatar Cowboy
   const avatarBox = document.getElementById('customer-avatar');
