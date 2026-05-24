@@ -216,3 +216,55 @@ class SoundEngine {
 // Exportar instancia única
 const sound = new SoundEngine();
 window.sound = sound;
+
+class MusicEngine {
+  constructor() {
+    this.currentAudio = null;
+  }
+
+  playMusic(src, startTime = 8) {
+    if (this.currentAudio && this.currentAudio.src.endsWith(encodeURI(src).replace(/#/g, '%23'))) {
+        return;
+    }
+
+    const nextAudio = new Audio(src);
+    nextAudio.loop = true;
+    nextAudio.currentTime = startTime;
+    nextAudio.volume = 0;
+    
+    const playPromise = nextAudio.play();
+    if (playPromise !== undefined) {
+      playPromise.catch(e => console.log('Audio autoplay prevented', e));
+    }
+
+    if (this.currentAudio) {
+      const prevAudio = this.currentAudio;
+      let vol = prevAudio.volume;
+      const fadeOut = setInterval(() => {
+        vol -= 0.1;
+        if (vol <= 0) {
+          vol = 0;
+          clearInterval(fadeOut);
+          prevAudio.pause();
+          prevAudio.src = '';
+        } else {
+          prevAudio.volume = vol;
+        }
+      }, 100);
+    }
+
+    let nextVol = 0;
+    const fadeIn = setInterval(() => {
+      nextVol += 0.1;
+      if (nextVol >= 1.0) {
+        nextVol = 1.0;
+        clearInterval(fadeIn);
+      }
+      nextAudio.volume = nextVol;
+    }, 100);
+
+    this.currentAudio = nextAudio;
+  }
+}
+const music = new MusicEngine();
+window.music = music;

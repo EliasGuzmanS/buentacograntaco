@@ -300,6 +300,11 @@ function setupFullscreen() {
 
 // --- PANTALLA INICIO ---
 function setupSplashEvents() {
+  const playMenuMusic = () => {
+    if (window.music) window.music.playMusic('music/Menu inicio.mpeg', 8);
+  };
+  document.getElementById('screen-splash').addEventListener('click', playMenuMusic);
+
   document.getElementById('btn-start-game').addEventListener('click', () => {
     if (window.sound) window.sound.playClick();
     state.money = 100.00;
@@ -372,6 +377,18 @@ function loadCustomer() {
   state.currentCustomer = JSON.parse(JSON.stringify(CUSTOMERS.find(c => c.id === customerId)));
   resetKitchenState();
   
+  if (window.music) {
+    let song = 'music/Menu inicio.mpeg';
+    if (customerId === 'lauro') song = 'music/El palomito 8 bits.mp3.mpeg';
+    else if (customerId === 'reyna') song = 'music/La Chona-El Tucanazo (Cumbia en 8bits).mp3.mpeg';
+    else if (customerId === 'eulalio') song = 'music/La Vaca - Mala Fe (Cumbia en 8bits).mp3.mpeg';
+    else if (customerId === 'marina') song = 'music/Se Me Perdió La Cadenita - Sonora Dinamita (Cumbia en 8bits).mp3.mpeg';
+    else if (customerId === 'doroteo') song = 'music/Sergio El Bailador - Bronco (Cumbia en 8bits).mp3.mpeg';
+    else if (customerId === 'gonzalo') song = 'music/El palomito 8 bits.mp3.mpeg';
+    else if (customerId === 'esperanza') song = 'music/La Chona-El Tucanazo (Cumbia en 8bits).mp3.mpeg';
+    window.music.playMusic(song, 8);
+  }
+
   // Actualizar UI del cliente
   document.getElementById('customer-state-origin').innerText = `${state.currentCustomer.name} — ${state.currentCustomer.state}`;
   document.getElementById('customer-dialog').innerText = `"${state.currentCustomer.shortDialog || state.currentCustomer.dialog}"`;
@@ -1454,6 +1471,10 @@ function updateHUD() {
 // --- FIN DEL DÍA (RESUMEN) ---
 function endDay() {
   if (state.patienceInterval) clearInterval(state.patienceInterval);
+
+  if (window.music) {
+    window.music.playMusic('music/Menu inicio.mpeg', 8);
+  }
 
   // Ocultar juego y mostrar pantalla final
   document.getElementById('screen-game').classList.remove('active');
