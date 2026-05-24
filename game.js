@@ -559,6 +559,24 @@ const OI_EMOJI = {
   'queso': '🧀', 'cebolla-cilantro': '🌿', 'repollo': '🥬',
   'rajas': '🌶️', 'salsa-roja': '🔴', 'salsa-verde': '🟢', 'limon': '🍋',
 };
+const OI_SPRITE = {
+  'harina-grande': 'tex_tortilla_harina.png', 
+  'harina-chica': 'tex_tortilla_harina.png', 
+  'maiz': 'tex_tortilla_maiz.png',
+  'frijoles': 'tex_frijoles.png', 
+  'guacamole': 'tex_guacamole.png',
+  'asada': 'tex_carne_1779541085189.png', 
+  'discada': 'tex_carne_1779541085189.png', 
+  'machaca': 'tex_carne_1779541085189.png', 
+  'pescado': 'tex_carne_1779541085189.png',
+  'queso': 'tex_queso_1779541106820.png', 
+  'cebolla-cilantro': 'tex_verdura_1779541095901.png', 
+  'repollo': 'tex_verdura_1779541095901.png',
+  'rajas': 'tex_verdura_1779541095901.png', 
+  'salsa-roja': 'tex_salsa_1779541119198.png', 
+  'salsa-verde': 'tex_salsa_1779541119198.png', 
+  'limon': 'tex_verdura_1779541095901.png'
+};
 const OI_COLOR = {
   'harina-grande': '#eae1d4', 'harina-chica': '#ddd0c0', 'maiz': '#f4d03f',
   'frijoles': '#5c3a21', 'guacamole': '#7cb342',
@@ -589,13 +607,22 @@ function updateKitchenTicket(customer) {
   document.getElementById('checklist-num').innerText = state.customerIndex + 1;
   ticketList.innerHTML = '';
 
+  const getIconHtml = (key) => {
+    if (OI_SPRITE[key]) {
+      let extraStyle = '';
+      if (key === 'pescado') extraStyle = 'filter: sepia(0.8) hue-rotate(30deg) brightness(1.2);';
+      if (key === 'salsa-verde') extraStyle = 'filter: hue-rotate(140deg) saturate(1.5) brightness(0.9);';
+      return `<img src="${OI_SPRITE[key]}" class="oi-sprite-icon" style="width:24px; height:24px; border-radius:50%; object-fit:cover; flex-shrink:0; border: 1.5px solid #555; margin-right:4px; ${extraStyle}">`;
+    }
+    return `<span class="oi-dot" style="background:${OI_COLOR[key] || '#888'}"></span><span class="oi-emoji">${OI_EMOJI[key] || '•'}</span>`;
+  };
+
   const addItem = (id, key, extraClass) => {
     const li = document.createElement('li');
     li.className = 'oi-item' + (extraClass ? ' ' + extraClass : '');
     li.id = id;
     li.innerHTML =
-      `<span class="oi-dot" style="background:${OI_COLOR[key] || '#888'}"></span>` +
-      `<span class="oi-emoji">${OI_EMOJI[key] || '•'}</span>` +
+      getIconHtml(key) +
       `<span class="oi-label">${OI_LABEL[key] || key}</span>` +
       `<span class="oi-check">✓</span>`;
     ticketList.appendChild(li);
@@ -653,8 +680,7 @@ function updateKitchenTicket(customer) {
       extraLi.className = 'oi-item oi-extra-item full-width';
       extraLi.id = 'oi-extra-' + extra;
       extraLi.innerHTML =
-        `<span class="oi-dot" style="background:${OI_COLOR[extra] || '#f39c12'}"></span>` +
-        `<span class="oi-emoji">➕${OI_EMOJI[extra] || ''}</span>` +
+        getIconHtml(extra) +
         `<span class="oi-label">${OI_LABEL[extra] || extra} (extra)</span>` +
         `<span class="oi-check">✓</span>`;
       ticketList.appendChild(extraLi);
