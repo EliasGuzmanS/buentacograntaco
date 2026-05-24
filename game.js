@@ -449,6 +449,8 @@ function loadCustomer() {
   state.currentCustomer.patience = 100;
   updatePatienceBar();
   
+  updateComalHint();
+  
   if (state.patienceInterval) clearInterval(state.patienceInterval);
   state.patienceInterval = setInterval(() => {
     state.currentCustomer.patience -= 1.3; // dura aprox 65 segundos
@@ -616,6 +618,56 @@ const OI_LABEL = {
   'rajas': 'Rajas', 'salsa-roja': 'S. Roja', 'salsa-verde': 'S. Verde', 'limon': 'Limón',
 };
 
+// --- UTILIDAD: VERIFICAR SI ESTÁN LISTOS TODOS LOS INGREDIENTES ---
+function checkAllIngredientsReady() {
+  if (!state.currentCustomer) return false;
+  const recipe = Object.values(RECIPES).find(r => r.id === state.currentCustomer.recipeId);
+  if (!recipe) return false;
+  
+  if (!state.currentOrder.tortilla) return false;
+  if (recipe.spread && state.currentOrder.spread !== recipe.spread) return false;
+  
+  // Toppings
+  const required = [...recipe.requiredToppings];
+  if (state.currentCustomer.specialMods && state.currentCustomer.specialMods.noVeg) {
+    const veggies = ['cebolla-cilantro', 'repollo', 'rajas', 'limon'];
+    for (const v of veggies) {
+      const idx = required.indexOf(v);
+      if (idx !== -1) required.splice(idx, 1);
+    }
+  }
+  
+  for (const t of required) {
+    if (!state.currentOrder.toppings.includes(t)) return false;
+  }
+  
+  // Extras
+  if (state.currentCustomer.specialMods && state.currentCustomer.specialMods.requireExtra) {
+    for (const extra of state.currentCustomer.specialMods.requireExtra) {
+       if (!state.currentOrder.toppings.includes(extra)) return false;
+    }
+  }
+  
+  return true;
+}
+
+function updateComalHint() {
+  const hint = document.getElementById('drag-comal-hint');
+  if (!hint) return;
+  
+  // Ocultar si está cocinándose, doblado, no hay cliente, o ya fue cocinado
+  if (!state.currentCustomer || state.isCooking || state.currentOrder.folded || state.currentOrder.cooked > 0) {
+    hint.classList.add('hidden');
+    return;
+  }
+  
+  if (checkAllIngredientsReady()) {
+    hint.classList.remove('hidden');
+  } else {
+    hint.classList.add('hidden');
+  }
+}
+
 function updateKitchenTicket(customer) {
   const checklistDiv = document.getElementById('order-checklist');
   const ticketList = document.getElementById('ticket-list');
@@ -756,6 +808,9 @@ function setupKitchenEvents() {
       // Habilitar ingredientes
       toggleIngredientButtons(true);
       
+      updateKitchenButtonsState();
+      updateComalHint();
+
       // Marcar botón activo
       btn.classList.add('active');
       setTimeout(() => btn.classList.remove('active'), 300);
@@ -779,6 +834,9 @@ function setupKitchenEvents() {
       updateHUD();
       
       checkOffTicketItem('oi-spread');
+      
+      updateKitchenButtonsState();
+      updateComalHint();
 
       // Renderizar untable cubriendo la tortilla
       const spreadLayer = document.getElementById('visual-spread');
@@ -888,6 +946,8 @@ function setupKitchenEvents() {
 
         // Pasamos el offset sin escala para que al renderizarse en el canvas se vea bien
         spawnSingleTopping(dragType, offsetX / scale, offsetY / scale);
+        
+        updateComalHint();
       }
       dragType = null;
     });
@@ -1059,8 +1119,10 @@ function spawnToppingVisuals(type) {
 function startCooking() {
   state.isCooking = true;
   const btnCook = document.getElementById('btn-cook');
-  btnCook.innerText = '🛑 Retirar del Comal';
+  btnCook.innerText = '🛑 Sacar del Comal';
   btnCook.style.background = '#e74c3c';
+  
+  updateComalHint();
   
   // Efecto de sonido
   if (window.sound) window.sound.startSizzle();
@@ -1098,6 +1160,8 @@ function stopCooking() {
   const btnCook = document.getElementById('btn-cook');
   btnCook.innerText = '🔥 Poner en Comal';
   btnCook.style.background = 'var(--terracotta)';
+  
+  updateComalHint();
   
   if (window.sound) window.sound.stopSizzle();
   
@@ -1224,6 +1288,7 @@ function foldMeal(style) {
   
   foldedContainer.appendChild(shape);
   
+  updateComalHint();
   updateKitchenButtonsState();
 }
 

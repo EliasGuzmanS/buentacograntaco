@@ -166,7 +166,10 @@
               <button id="btn-trash" class="action-btn btn-trash-game" title="Tirar y empezar de nuevo">🗑️ Desechar</button>
             </div>
             
-            <div class="canvas-wrapper-game">
+            <div class="canvas-wrapper-game" style="position: relative;">
+              <div id="drag-comal-hint" class="hidden" style="position: absolute; top: -35px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.8); color: #f1c40f; padding: 6px 12px; border-radius: 8px; font-weight: bold; font-size: 0.9rem; pointer-events: none; z-index: 100; border: 2px solid #f1c40f; white-space: nowrap; box-shadow: 0 4px 6px rgba(0,0,0,0.3);">
+                ¡Arrastra al comal! 👇
+              </div>
               <div id="tortilla-canvas" class="tortilla-empty">
                 <div class="tortilla-disc" id="visual-tortilla"></div>
                 <div class="spread-layer" id="visual-spread"></div>
