@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
   setupModalEvents();
   setupSummaryEvents();
   setupFullscreen();
+  setupMusicToggle();
   setupResizeHandler();
 });
 
@@ -298,12 +299,32 @@ function setupFullscreen() {
   });
 }
 
+function setupMusicToggle() {
+  const btnMusic = document.getElementById('btn-global-music');
+  if (!btnMusic) return;
+
+  btnMusic.addEventListener('click', () => {
+    if (window.sound && window.sound.ctx) window.sound.playClick();
+    if (window.music) {
+      const isMuted = window.music.toggleMusic();
+      btnMusic.innerText = isMuted ? '🎵 Música: OFF' : '🎵 Música: ON';
+    }
+  });
+}
+
 // --- PANTALLA INICIO ---
 function setupSplashEvents() {
   const playMenuMusic = () => {
-    if (window.music) window.music.playMusic('music/Menu inicio.mpeg', 8);
+    if (window.music && document.getElementById('screen-splash').classList.contains('active')) {
+      window.music.playMusic('music/Menu inicio.mpeg', 8);
+    }
+    document.removeEventListener('click', playMenuMusic);
+    document.removeEventListener('keydown', playMenuMusic);
+    document.removeEventListener('touchstart', playMenuMusic);
   };
-  document.getElementById('screen-splash').addEventListener('click', playMenuMusic);
+  document.addEventListener('click', playMenuMusic);
+  document.addEventListener('keydown', playMenuMusic);
+  document.addEventListener('touchstart', playMenuMusic);
 
   document.getElementById('btn-start-game').addEventListener('click', () => {
     if (window.sound) window.sound.playClick();
@@ -1430,6 +1451,10 @@ function serveOrder(timeout = false) {
       }
       
       presentation.style.display = 'flex';
+      
+      if (window.music) {
+        window.music.playMusic('music/Menu inicio.mpeg', 8);
+      }
       
       let starCount = 5;
       if (score < 50) starCount = 1;

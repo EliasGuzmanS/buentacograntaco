@@ -220,6 +220,22 @@ window.sound = sound;
 class MusicEngine {
   constructor() {
     this.currentAudio = null;
+    this.isMuted = false;
+  }
+
+  toggleMusic() {
+    this.isMuted = !this.isMuted;
+    if (this.currentAudio) {
+      if (this.isMuted) {
+        this.currentAudio.pause();
+      } else {
+        const playPromise = this.currentAudio.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(e => console.log('Audio autoplay prevented', e));
+        }
+      }
+    }
+    return this.isMuted;
   }
 
   playMusic(src, startTime = 8) {
@@ -232,16 +248,18 @@ class MusicEngine {
     nextAudio.currentTime = startTime;
     nextAudio.volume = 0;
     
-    const playPromise = nextAudio.play();
-    if (playPromise !== undefined) {
-      playPromise.catch(e => console.log('Audio autoplay prevented', e));
+    if (!this.isMuted) {
+      const playPromise = nextAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(e => console.log('Audio autoplay prevented', e));
+      }
     }
 
     if (this.currentAudio) {
       const prevAudio = this.currentAudio;
       let vol = prevAudio.volume;
       const fadeOut = setInterval(() => {
-        vol -= 0.1;
+        vol -= 0.015;
         if (vol <= 0) {
           vol = 0;
           clearInterval(fadeOut);
@@ -250,18 +268,18 @@ class MusicEngine {
         } else {
           prevAudio.volume = vol;
         }
-      }, 100);
+      }, 50);
     }
 
     let nextVol = 0;
     const fadeIn = setInterval(() => {
-      nextVol += 0.1;
+      nextVol += 0.015;
       if (nextVol >= 1.0) {
         nextVol = 1.0;
         clearInterval(fadeIn);
       }
-      nextAudio.volume = nextVol;
-    }, 100);
+      if (nextAudio) nextAudio.volume = nextVol;
+    }, 50);
 
     this.currentAudio = nextAudio;
   }

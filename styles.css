@@ -1895,3 +1895,32 @@ body {
 .global-fullscreen-btn:active {
   transform: scale(0.95);
 }
+
+.global-music-btn {
+  position: fixed;
+  top: 15px;
+  right: 250px;
+  background: rgba(0, 0, 0, 0.6);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 9999;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.global-music-btn:hover {
+  background: rgba(0, 0, 0, 0.9);
+  border-color: #3498db;
+  color: #3498db;
+  transform: scale(1.05);
+}
+
+.global-music-btn:active {
+  transform: scale(0.95);
+}
+
