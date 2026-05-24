@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Permanent+Marker&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=38">
+  <link rel="stylesheet" href="styles.css?v=39">
 </head>
 <body>
   <!-- Botón Global Fullscreen -->
@@ -412,13 +412,21 @@
           </div>
         </div>
       </div>
-    </div>
-
   </div> <!-- Fin game-container -->
   </div> <!-- Fin game-wrapper -->
 
+  <!-- Delivery Presentation Overlay (FULL RES) -->
+  <div id="delivery-presentation" style="display:none; position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:99999; opacity:0; transition: opacity 0.5s ease; background-color: rgba(0,0,0,0.9); flex-direction: column; justify-content: flex-end; align-items: center; padding-bottom: 80px;">
+    <img id="delivery-image" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; object-fit:contain; z-index:-1; opacity:0.8;">
+    <div style="text-align: center; position:relative; z-index:1;">
+      <h2 style="font-family: 'Permanent Marker', cursive; font-size: 4.5rem; color:#fff; margin: 0; text-shadow: 4px 4px 15px rgba(0,0,0,1);">¡Entregado!</h2>
+      <div id="delivery-stars" style="font-size: 5rem; color: #f1c40f; text-shadow: 4px 4px 15px rgba(0,0,0,1); margin-top: 5px;">
+      </div>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="sound.js?v=12"></script>
-  <script src="game.js?v=33"></script>
+  <script src="game.js?v=51"></script>
 </body>
 </html>

@@ -905,11 +905,17 @@ body {
 
 .spread-frijoles {
   background-color: var(--bean-brown);
+  background-image: url('tex_frijoles.png');
+  background-size: cover;
+  background-position: center;
   border: 1px solid #4a342c;
 }
 
 .spread-guacamole {
   background-color: var(--avocado-green);
+  background-image: url('tex_guacamole.png');
+  background-size: cover;
+  background-position: center;
   border: 1px solid #1e7e34;
 }
 
@@ -1449,69 +1455,47 @@ body {
   border: 2px solid #5a2500;
 }
 
-/* Representaciones de guisados dentro de las cazuelas */
-.bowl-asada {
-  background: #5d4037;
-  background-image: radial-gradient(#1a0f08 4px, transparent 4px);
-  background-size: 10px 10px;
-}
-
-.bowl-discada {
-  background: #7f2d21;
-  background-image: repeating-linear-gradient(45deg, #4a1c17 0, #4a1c17 4px, transparent 4px, transparent 8px);
-}
-
-.bowl-machaca {
-  background: #e5b323;
-  background-image: radial-gradient(rgba(93,64,55,0.45) 3px, transparent 4px);
-  background-size: 8px 8px;
+/* Representaciones de guisados dentro de las cazuelas usando Assets */
+.bowl-asada, .bowl-discada, .bowl-machaca {
+  background-image: url('tex_carne_1779541085189.png');
+  background-size: cover;
+  background-position: center;
 }
 
 .bowl-fish {
-  background: #f1c40f;
-  background-image: linear-gradient(135deg, #d4ac0d 25%, transparent 25%, transparent 50%, #d4ac0d 50%);
-  background-size: 12px 12px;
+  background-image: url('tex_carne_1779541085189.png');
+  background-size: cover;
+  background-position: center;
+  filter: sepia(0.8) hue-rotate(30deg) brightness(1.2);
 }
 
 .bowl-cheese {
-  background: var(--queso-menonita);
-  background-image: repeating-linear-gradient(0deg, #fff 0, #fff 2px, transparent 2px, transparent 4px);
+  background-image: url('tex_queso_1779541106820.png');
+  background-size: cover;
+  background-position: center;
 }
 
-.bowl-cilantro {
-  background: #27ae60;
-  background-image: radial-gradient(#2ecc71 2px, transparent 3px);
-  background-size: 6px 6px;
+.bowl-cilantro, .bowl-cabbage, .bowl-rajas, .bowl-lime {
+  background-image: url('tex_verdura_1779541095901.png');
+  background-size: cover;
+  background-position: center;
 }
 
-.bowl-cabbage {
-  background: #eef9e7;
-  background-image: repeating-linear-gradient(90deg, #27ae60 0, #27ae60 1px, transparent 1px, transparent 6px);
-}
-
-.bowl-rajas {
-  background: #1b4d3e;
-  background-image: linear-gradient(45deg, #113328 25%, transparent 25%);
-  background-size: 10px 10px;
-}
-
+/* La salsa verde y roja usan la misma textura base pero ajustaremos el color */
 .bowl-salsa-roja {
-  background: #c0392b;
-  background-image: radial-gradient(#ff7675 2px, transparent 3px);
-  background-size: 12px 12px;
+  background-image: url('tex_salsa_1779541119198.png');
+  background-size: cover;
+  background-position: center;
+  filter: hue-rotate(140deg) saturate(1.5) brightness(0.9); /* Hacerla más roja */
 }
 
 .bowl-salsa-verde {
-  background: #2ecc71;
-  background-image: radial-gradient(#a3cb38 2px, transparent 3px);
-  background-size: 12px 12px;
+  background-image: url('tex_salsa_1779541119198.png');
+  background-size: cover;
+  background-position: center;
 }
 
-.bowl-lime {
-  background: #27ae60;
-  background-image: radial-gradient(#f1c40f 6px, transparent 7px);
-  background-size: 16px 16px;
-}
+
 
 .bowl-tag {
   font-family: var(--font-hand);

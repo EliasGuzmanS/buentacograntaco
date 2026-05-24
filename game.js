@@ -394,7 +394,7 @@ function loadCustomer() {
   
   if (state.patienceInterval) clearInterval(state.patienceInterval);
   state.patienceInterval = setInterval(() => {
-    state.currentCustomer.patience -= 1.5; // dura aprox 65 segundos
+    state.currentCustomer.patience -= 1.3; // dura aprox 65 segundos
     updatePatienceBar();
     
     if (state.currentCustomer.patience <= 0) {
@@ -446,6 +446,7 @@ function resetKitchenState() {
   // Limpiar lienzo
   const tortillaDisc = document.getElementById('visual-tortilla');
   tortillaDisc.className = 'tortilla-disc';
+  tortillaDisc.style.filter = 'none'; // Resetear efecto de quemado
   
   const spreadLayer = document.getElementById('visual-spread');
   spreadLayer.className = 'spread-layer';
@@ -1100,14 +1101,20 @@ function foldMeal(style) {
     // Heredar el color de la tortilla
     if (state.currentOrder.tortilla === 'maiz') {
       shape.style.backgroundColor = 'var(--tortilla-maiz)';
+      shape.style.backgroundImage = "url('tex_tortilla_maiz.png')";
+      shape.style.backgroundSize = 'cover';
       shape.style.borderColor = '#e1b12c';
     } else {
       shape.style.backgroundColor = 'var(--tortilla-harina)';
+      shape.style.backgroundImage = "url('tex_tortilla_harina.png')";
+      shape.style.backgroundSize = 'cover';
       shape.style.borderColor = '#eae1d4';
     }
   } else {
     shape.className = 'folded-burrito-shape';
     shape.style.backgroundColor = 'var(--tortilla-harina)';
+    shape.style.backgroundImage = "url('tex_tortilla_harina.png')";
+    shape.style.backgroundSize = 'cover';
     shape.style.borderColor = '#eae1d4';
   }
   
@@ -1137,7 +1144,7 @@ function cutMeal() {
   const canvas = document.getElementById('tortilla-canvas');
   const cutLine = document.createElement('div');
   cutLine.className = 'cut-line';
-  if (state.currentOrder.foldedType === 'burrito') {
+  if (state.currentOrder.folded === 'burrito') {
     cutLine.classList.add('horizontal');
   }
   canvas.appendChild(cutLine);
@@ -1154,8 +1161,13 @@ function cutMeal() {
     shape.style.clipPath = 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'; // Mantener estable
     
     // Simular corte visual aplicando una máscara o duplicando el elemento
-    // Para simplificar, le añadimos una línea negra tenue en medio
-    shape.style.backgroundImage = 'linear-gradient(to right, transparent 48%, #5d4037 49%, #5d4037 51%, transparent 52%)';
+    // Para simplificar, le añadimos una línea negra tenue en medio y restauramos la textura
+    const img = (state.currentOrder.tortilla === 'maiz' && state.currentOrder.folded === 'taco') ? 'tex_tortilla_maiz.png' : 'tex_tortilla_harina.png';
+    const gradient = state.currentOrder.folded === 'burrito' 
+      ? 'linear-gradient(to bottom, transparent 48%, #5d4037 49%, #5d4037 51%, transparent 52%)'
+      : 'linear-gradient(to right, transparent 48%, #5d4037 49%, #5d4037 51%, transparent 52%)';
+      
+    shape.style.backgroundImage = `${gradient}, url('${img}')`;
   }
   
   updateKitchenButtonsState();
@@ -1383,10 +1395,54 @@ function serveOrder(timeout = false) {
   }
   
   // Efecto de desvanecer al cliente y pasar al siguiente
-  setTimeout(() => {
-    state.customerIndex++;
-    loadCustomer();
-  }, 4500);
+  if (!timeout) {
+    setTimeout(() => {
+      const imageMap = {
+        'discada_burrito': 'burrito_discada_1779538989185.png',
+        'machaca_burrito': 'burrito_machaca_1779538976949.jpg',
+        'asada_taco': 'taco_asada_1779538963899.png',
+        'pescado_taco': 'taco_pescado_1779539001401.png'
+      };
+      
+      const presentation = document.getElementById('delivery-presentation');
+      if (!presentation) return; // Fallback de seguridad
+      
+      const deliveryImage = document.getElementById('delivery-image');
+      if (deliveryImage) {
+        deliveryImage.src = imageMap[targetRecipe.id] || '';
+      }
+      
+      presentation.style.display = 'flex';
+      
+      let starCount = 5;
+      if (score < 50) starCount = 1;
+      else if (score < 65) starCount = 2;
+      else if (score < 80) starCount = 3;
+      else if (score < 95) starCount = 4;
+      
+      const starsEl = document.getElementById('delivery-stars');
+      if (starsEl) starsEl.innerText = '⭐'.repeat(starCount) + '☆'.repeat(5 - starCount);
+      
+      // Forzar un reflow para que la transición funcione
+      void presentation.offsetWidth;
+      presentation.style.opacity = '1';
+      
+      setTimeout(() => {
+        presentation.style.opacity = '0';
+        setTimeout(() => {
+          presentation.style.display = 'none';
+          state.customerIndex++;
+          loadCustomer();
+        }, 500);
+      }, 3500);
+      
+    }, 1000); // Reducir tiempo de espera de 2500 a 1000
+  } else {
+    setTimeout(() => {
+      state.customerIndex++;
+      loadCustomer();
+    }, 4500);
+  }
 }
 
 // --- ACTUALIZAR HUD ---
@@ -1431,7 +1487,8 @@ function endDay() {
 }
 
 // --- EVENTOS PANTALLA RESUMEN ---
-function setupSummaryEvents() {
+function setupSummaryEvents() 
+{
   document.getElementById('btn-restart-day').addEventListener('click', () => {
     if (window.sound) window.sound.playClick();
     state.day++;
